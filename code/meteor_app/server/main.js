@@ -601,6 +601,7 @@ function resetDatabase() {
             });
 
           }
+          console.log('===READY===');
         });
 
       });
@@ -1480,14 +1481,14 @@ Meteor.methods({
     }
   },
   'updateLabels'({ exampleId, methodName, labels, view, keyword, focalNode }) {
-    console.log('got the labels ' + exampleId + '  ' + methodName + ' ' + labels + ' ' + view + ' keyword:' + keyword + 'focalNode = ' + focalNode);
+    // console.log('got the labels ' + exampleId + '  ' + methodName + ' ' + labels + ' ' + view + ' keyword:' + keyword + 'focalNode = ' + focalNode);
     
 
     var a = Examples.update({exampleID: parseInt(exampleId)}, {$set: {label: labels}}, function (error, result) {
         if (error) {
           console.log('error when updating Examples with label---->' + error);
         } else {
-          console.log('updated Examples with label---->' + result);
+          // console.log('updated Examples with label---->' + result);
         }
     });
 
@@ -1503,8 +1504,8 @@ Meteor.methods({
     var elementIdToGraphId = {};
     // exclude the examples that do not match the current view
     var selector = filterByViewAndKeyword(buildSkeleton(), view, keyword);
-    console.log('updating labels, selector is ', selector, 'view is ', view)
-    console.log('count is ', Examples.find(selector).count());
+    // console.log('updating labels, selector is ', selector, 'view is ', view)
+    // console.log('count is ', Examples.find(selector).count());
     
     Examples.find(selector).forEach(function (example) {
       elementIdToGraphId[example.exampleID] = example.graphId;
