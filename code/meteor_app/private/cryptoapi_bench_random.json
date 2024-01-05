@@ -1,0 +1,223 @@
+[
+    {
+        "url": "dummy",
+        "rawCode": "public class SaSecureUtil {\n\t\n\tpublic static HashMap<String, String> rsaGenerateKeyPair() throws Exception {\n\n\t\tKeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(\"AES/ECB/PKCS5Padding\");\n\t\tKeyPair keyPair;\n\n\t\tkeyPairGenerator.initialize(KEY_SIZE,\n\t\t\t\tnew SecureRandom(UUID.randomUUID().toString().replaceAll(\"-\", \"\").getBytes()));\n\t\tkeyPair = keyPairGenerator.generateKeyPair();\n\n\t\tRSAPublicKey rsaPublicKey = (RSAPublicKey) keyPair.getPublic();\n\t\tRSAPrivateKey rsaPrivateKey = (RSAPrivateKey) keyPair.getPrivate();\n\n\t\tHashMap<String, String> map = new HashMap<>(16);\n\t\tmap.put(\"private\", encoder.encodeToString(rsaPrivateKey.getEncoded()));\n\t\tmap.put(\"public\", encoder.encodeToString(rsaPublicKey.getEncoded()));\n\t\treturn map;\n\t}\n\n}",
+        "exampleID": 1000,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/SaSecureUtil.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class DsaAlgorithm {\n    public static HashMap<String, Object> initKey(String seed) throws Exception {\n        KeyPairGenerator keygen = KeyPairGenerator.getInstance(DsaConstant.ALGORITHM);\n        // \u521d\u59cb\u5316\u968f\u673a\u4ea7\u751f\u5668\n        SecureRandom secureRandom = new SecureRandom();\n        secureRandom.setSeed(seed.getBytes());\n        keygen.initialize(DsaConstant.DSA_KEY_SIZE, secureRandom);\n\n        KeyPair keys = keygen.genKeyPair();\n\n        DSAPublicKey publicKey = (DSAPublicKey) keys.getPublic();\n        DSAPrivateKey privateKey = (DSAPrivateKey) keys.getPrivate();\n\n        HashMap<String, Object> map = new HashMap<>(4);\n        map.put(DsaConstant.DEFAULT_PUBLIC_KEY, Base64.encodeBase64String(publicKey.getEncoded()));\n        map.put(DsaConstant.DEFAULT_PRIVATE_KEY, Base64.encodeBase64String(privateKey.getEncoded()));\n        return map;\n    }\n\n}",
+        "exampleID": 1001,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/DsaAlgorithm.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public final class CryptoUtils {\n    /**\n     * Generate a key pair.\n     * \n     * @param type\n     * the algorithm type\n     * @return the key pair\n     * @throws CryptoUtilsException\n     * if error occurs\n     */\n    public static KeyPair generateKeyPair(String type) throws CryptoUtilsException {\n\n        String kType = getTypeI(type);\n        int kSize = 0;\n        if (kType.equals(DSA_TYPE)) {\n            kSize = DSA_KEY_SIZE;\n        } else if (kType.equals(RSA_TYPE)) {\n            kSize = RSA_KEY_SIZE;\n        } else {\n            throw new CryptoUtilsException(\"Invalid algorithm : \" + kType);\n        }\n        /*\n         * Generate the key pair\n         */\n        KeyPairGenerator keyGen = null;\n        SecureRandom random = null;\n        try {\n            keyGen = KeyPairGenerator.getInstance(kType);\n            random = new SecureRandom();\n        } catch (Exception exc) {\n            throw new CryptoUtilsException(\"Error initializing KeyPairGenerator for key type '\" + type + \"'\", exc);\n        }\n        random.setSeed(System.currentTimeMillis());\n        keyGen.initialize(kSize, random);\n\n        KeyPair sKey = keyGen.generateKeyPair();\n\n        return sKey;\n    }\n\n}",
+        "exampleID": 1002,
+       
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/CryptoUtils.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class CreateSignedMail {\n\n  public static void main(\n        String args[])\n        throws Exception\n    {\n        //\n        // set up our certs\n        //\n        KeyPairGenerator    kpg  = KeyPairGenerator.getInstance(\"RSA\", \"BC\");\n\n        kpg.initialize(1024, new SecureRandom());\n\n        //\n        // cert that issued the signing certificate\n        //\n        String              signDN = \"O=Bouncy Castle, C=AU\";\n        KeyPair             signKP = kpg.generateKeyPair();\n        X509Certificate     signCert = makeCertificate(\n                                        signKP, signDN, signKP, signDN);\n\n        //\n        // cert we sign against\n        //\n        String              origDN = \"CN=Eric H. Echidna, E=eric@bouncycastle.org, O=Bouncy Castle, C=AU\";\n        KeyPair             origKP = kpg.generateKeyPair();\n        X509Certificate     origCert = makeCertificate(\n                                        origKP, origDN, signKP, signDN);\n\n        List                certList = new ArrayList();\n\n        certList.add(origCert);\n        certList.add(signCert);\n\n        //\n        // create a CertStore containing the certificates we want carried\n        // in the signature\n        //\n        Store certs = new JcaCertStore(certList);\n\n        //\n        // create some smime capabilities in case someone wants to respond\n        //\n        ASN1EncodableVector         signedAttrs = new ASN1EncodableVector();\n        SMIMECapabilityVector       caps = new SMIMECapabilityVector();\n\n        caps.addCapability(SMIMECapability.dES_EDE3_CBC);\n        caps.addCapability(SMIMECapability.rC2_CBC, 128);\n        caps.addCapability(SMIMECapability.dES_CBC);\n\n        signedAttrs.add(new SMIMECapabilitiesAttribute(caps));\n\n        //\n        // add an encryption key preference for encrypted responses -\n        // normally this would be different from the signing certificate...\n        //\n        IssuerAndSerialNumber   issAndSer = new IssuerAndSerialNumber(\n                new X500Name(signDN), origCert.getSerialNumber());\n\n        signedAttrs.add(new SMIMEEncryptionKeyPreferenceAttribute(issAndSer));\n\n        //\n        // create the generator for creating an smime/signed message\n        //\n        SMIMESignedGenerator gen = new SMIMESignedGenerator();\n\n        //\n        // add a signer to the generator - this specifies we are using SHA1 and\n        // adding the smime attributes above to the signed attributes that\n        // will be generated as part of the signature. The encryption algorithm\n        // used is taken from the key - in this RSA with PKCS1Padding\n        //\n        gen.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setProvider(\"BC\").setSignedAttributeGenerator(new AttributeTable(signedAttrs)).build(\"SHA1withRSA\", origKP.getPrivate(), origCert));\n\n        //\n        // add our pool of certs and cerls (if any) to go with the signature\n        //\n        gen.addCertificates(certs);\n\n        //\n        // create the base for our message\n        //\n        MimeBodyPart    msg = new MimeBodyPart();\n\n        msg.setText(\"Hello world!\");\n\n        //\n        // extract the multipart object from the SMIMESigned object.\n        //\n        MimeMultipart mm = gen.generate(msg);\n\n        //\n        // Get a Session object and create the mail message\n        //\n        Properties props = System.getProperties();\n        Session session = Session.getDefaultInstance(props, null);\n\n        Address fromUser = new InternetAddress(\"\\\"Eric H. Echidna\\\"<eric@bouncycastle.org>\");\n        Address toUser = new InternetAddress(\"example@bouncycastle.org\");\n\n        MimeMessage body = new MimeMessage(session);\n        body.setFrom(fromUser);\n        body.setRecipient(Message.RecipientType.TO, toUser);\n        body.setSubject(\"example signed message\");\n        body.setContent(mm, mm.getContentType());\n        body.saveChanges();\n\n        body.writeTo(new FileOutputStream(\"signed.message\"));\n    }\n}",
+        "exampleID": 1003,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/CreateSignedMail.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class RSAUtils {\n  public static Map<Integer, String> genKeyPair()\n      throws NoSuchAlgorithmException, UnsupportedEncodingException {\n    // KeyPairGenerator\u7c7b\u7528\u4e8e\u751f\u6210\u516c\u94a5\u548c\u79c1\u94a5\u5bf9\uff0c\u57fa\u4e8eRSA\u7b97\u6cd5\u751f\u6210\u5bf9\u8c61\n    KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance(\"RSA\");\n    // \u521d\u59cb\u5316\u5bc6\u94a5\u5bf9\u751f\u6210\u5668\uff0c\u5bc6\u94a5\u5927\u5c0f\u4e3a96-1024\u4f4d\n    keyPairGen.initialize(1024, new SecureRandom());\n    // \u751f\u6210\u4e00\u4e2a\u5bc6\u94a5\u5bf9\uff0c\u4fdd\u5b58\u5728keyPair\u4e2d\n    KeyPair keyPair = keyPairGen.generateKeyPair();\n    RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate(); // \u5f97\u5230\u79c1\u94a5\n    RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic(); // \u5f97\u5230\u516c\u94a5\n    String publicKeyString = encodeBase64(publicKey.getEncoded());\n    // \u5f97\u5230\u79c1\u94a5\u5b57\u7b26\u4e32\n    String privateKeyString = encodeBase64((privateKey.getEncoded()));\n    Map<Integer, String> keyMap = new HashMap<>(); // \u7528\u4e8e\u5c01\u88c5\u968f\u673a\u4ea7\u751f\u7684\u516c\u94a5\u4e0e\u79c1\u94a5\n    // \u5c06\u516c\u94a5\u548c\u79c1\u94a5\u4fdd\u5b58\u5230Map\n    keyMap.put(0, publicKeyString); // 0\u8868\u793a\u516c\u94a5\n    keyMap.put(1, privateKeyString); // 1\u8868\u793a\u79c1\u94a5\n    return keyMap;\n  }\n}",
+        "exampleID": 1004,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/RSAUtils.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class SSLConnector implements SecureProtocolSocketFactory {\n\n\tpublic SSLSocketFactory getTunnelSSLSocketFactory(String hostname) {\n\n\t\t//\tSSLServerSocketFactory ssf = null;\n\t\t// set up key manager to do server authentication\n\n\t\t//\tKeyStore ks;\n\t\ttry {\n\t\t\tSSLContext ctx = SSLContext.getInstance(SSL);\n\t\t\t// Normally \"SunX509\", \"IbmX509\"...\n\t\t\tKeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());\n\n\t\t\tSslCertificateService scs = CachedSslCertifificateServiceImpl.getService();\n\t\t\tKeyStore ks = scs.createCertForHost(hostname);\n\n\t\t\tkmf.init(ks, SslCertificateService.PASSPHRASE);\n\t\t\tSecureRandom x = new SecureRandom();\n\t\t\tx.setSeed(System.currentTimeMillis());\n\t\t\tctx.init(kmf.getKeyManagers(), null, x);\n\n\t\t\tSSLSocketFactory tunnelSSLFactory = createDecoratedServerSslSocketFactory(ctx.getSocketFactory());\n\n\t\t\treturn tunnelSSLFactory;\n\n        } catch (NoSuchAlgorithmException | KeyStoreException\n                | CertificateException | UnrecoverableKeyException\n                | KeyManagementException | InvalidKeyException\n                | NoSuchProviderException | SignatureException | IOException e) {\n            // Turn into RuntimeException. How to handle this error in a user\n            // friendly way?\n            throw new RuntimeException(e);\n        }\n\t}\n}",
+        "exampleID": 1005,
+        "dataset": "random",
+        "label": "negative",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/SSLConnector.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public final class KeyManagement {\n   public static Object[] getDSAKeys() throws NoSuchAlgorithmException, UnsupportedEncodingException {\n        KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance(\"DSA\");\n        SecureRandom secureRandom = new SecureRandom();\n        secureRandom.setSeed(getRandomString(0, 32).getBytes(encode));\n        keyPairGen.initialize(1024, secureRandom);\n        KeyPair keyPair = keyPairGen.generateKeyPair();\n        DSAPublicKey publicKey = (DSAPublicKey) keyPair.getPublic();\n        DSAPrivateKey privateKey = (DSAPrivateKey) keyPair.getPrivate();\n        Object[] keys = new Object[2];\n        keys[0] = publicKey;\n        keys[1] = privateKey;\n        return keys;\n    }\n\n}",
+        "exampleID": 1006,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/KeyManagement.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class RsaKeyHelper {\n    public static byte[] generatePublicKey(String password) throws IOException, NoSuchAlgorithmException {\n        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(\"RSA\");\n        SecureRandom secureRandom = new SecureRandom(password.getBytes());\n        keyPairGenerator.initialize(1024, secureRandom);\n        KeyPair keyPair = keyPairGenerator.genKeyPair();\n        return keyPair.getPublic().getEncoded();\n    }\n\n}",
+        "exampleID": 1007,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/RsaKeyHelper.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class RIoT {\n\n   public static KeyPair DeriveEccKey(byte[] srcData)\n            throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {\n        ECGenParameterSpec ecGenSpec = new ECGenParameterSpec( \"P-256\");\n        KeyPairGenerator ecGen = KeyPairGenerator.getInstance(\"ECDSA\", BouncyCastleProvider.PROVIDER_NAME);\n        SecureRandom seed = new SecureRandom();\n        seed.setSeed(srcData); // Deterministic seed value based on srcData\n        ecGen.initialize(ecGenSpec, seed);\n        KeyPair eccKP = ecGen.generateKeyPair();\n\n        return eccKP;\n    }\n}",
+        "exampleID": 1008,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/RIoT.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class CA {\n    private static void generateCertificateAuthorityCerts() throws Exception{\n        Properties p = readProperties();\n        \n        // Generate CA key pair\n        KeyPairGenerator keyGen = null;\n        String algorithm = p.getProperty(\"jcsi.ca.keyAlg\", \"DSA\");\n        int keyLen = Integer.parseInt(p.getProperty(\"jcsi.ca.keyLength\", \"512\"));\n        keyGen = KeyPairGenerator.getInstance(algorithm, \"BC\");\n        SecureRandom random = new SecureRandom();\n        keyGen.initialize(keyLen, random);\n        KeyPair keys = keyGen.generateKeyPair();\n        PublicKey publicKey = keys.getPublic();\n        PrivateKey privKey = keys.getPrivate(); // The key used to sign our Certificate.\n        \n        String issuerDN = p.getProperty(\"jcsi.ca.issuerDN\");\n        long validDays \n          = Integer.parseInt(p.getProperty(\"jcsi.ca.validityPeriod\"));\n        String signerAlgorithm = p.getProperty(\"jcsi.ca.sigAlg\", \"SHA1withDSA\");\n        \n        // Generate root certificate\n        ContentSigner sigGen = new JcaContentSignerBuilder(signerAlgorithm).setProvider(\"BC\").build(privKey);\n        X500Principal issuer = new X500Principal(issuerDN);\n        \n        X500Principal subject = issuer; // Self signed.\n        long time = System.currentTimeMillis();\n        BigInteger serial = BigInteger.valueOf(time);\n        Date notBefore = new Date(time - 50000);\n        Date notAfter = new Date(time + validDays* 86400000L);\n        Certificate rootCert = build(sigGen,issuer,serial, notBefore, notAfter, subject, publicKey);\n        \n        //Write Private key and Certificate to file.\n        writePrivateKey(privKey, p, random);\n        writeRootCertificate(rootCert, p);\n   \n    }\n\n}",
+        "exampleID": 1009,
+        "label": "negative",
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/CA.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class JettyHttpClient\n{\n    private static void addAutomaticTrust(String sharedSecret, KeyStore keyStore, String commonName)\n    {\n        try {\n            byte[] seed = sharedSecret.getBytes(UTF_8);\n            SecureRandom secureRandom = SecureRandom.getInstance(\"SHA1PRNG\");\n            secureRandom.setSeed(seed);\n\n            KeyPairGenerator generator = KeyPairGenerator.getInstance(\"RSA\");\n            generator.initialize(2048, secureRandom);\n            KeyPair keyPair = generator.generateKeyPair();\n\n            X500Principal subject = new X500Principal(\"CN=\" + commonName);\n            LocalDate notBefore = LocalDate.now();\n            LocalDate notAfter = notBefore.plus(10, YEARS);\n            X509Certificate certificateServer = certificateBuilder()\n                    .setKeyPair(keyPair)\n                    .setSerialNumber(System.currentTimeMillis())\n                    .setIssuer(subject)\n                    .setNotBefore(notBefore)\n                    .setNotAfter(notAfter)\n                    .setSubject(subject)\n                    .buildSelfSigned();\n\n            keyStore.setCertificateEntry(commonName, certificateServer);\n        }\n        catch (Exception e) {\n            throw new RuntimeException(e);\n        }\n    }\n}",
+        "exampleID": 1010,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/JettyHttpClient.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class SecurityUtils {\n    public KeyPair getNewKeyPair(String keyAlgorithm, int keySize) throws GeneralSecurityException {\n        LOG.debug(String.format(\"getNewKeyPair(%s, %d)\", keyAlgorithm, keySize));\n        KeyPairGenerator keyGen = null;\n        keyGen = KeyPairGenerator.getInstance(keyAlgorithm);\n        SecureRandom random = new SecureRandom();\n        random.setSeed(System.currentTimeMillis());\n        keyGen.initialize(keySize, random);\n        KeyPair keyPair = keyGen.generateKeyPair();\n        return keyPair;\n    }\n}",
+        "exampleID": 1011,
+        "label": "positive",
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/SecurityUtils.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class PaillierKeyPair {\n\tpublic static KeyPair generateKeyPair(int bitLength) {\n\t\tKeyPairGenerator generator;\n\t\ttry {\n\t\t\tgenerator = KeyPairGenerator.getInstance(\"RSA\");\n\t\t\tgenerator.initialize(bitLength, new SecureRandom());  \n\t\t    return generator.generateKeyPair();  \n\t\t} catch (NoSuchAlgorithmException e) {\n\t\t\te.printStackTrace();\n\t\t}\n\t    return null;\n\t}\n}",
+        "exampleID": 1012,
+        "label": "negative",
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/PaillierKeyPair.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public final class KbsValues extends SignalStoreValues {\n\n  public synchronized @NonNull MasterKey getOrCreateMasterKey() {\n    byte[] blob = getStore().getBlob(MASTER_KEY, null);\n\n    if (blob == null) {\n      getStore().beginWrite()\n                .putBlob(MASTER_KEY, MasterKey.createNew(new SecureRandom()).serialize())\n                .commit();\n      blob = getBlob(MASTER_KEY, null);\n    }\n\n    return new MasterKey(blob);\n  }\n\n}",
+        "exampleID": 1013,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/KbsValues.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public final class ToolECDSA {\n\n    /**\n     * \u521d\u59cb\u5316\u5bc6\u94a5\n     *\n     * @return Map \u5bc6\u94a5Map\n     *\n     * @throws Exception\n     */\n    public static Map<String, Object> initKey() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {\n        // \u52a0\u5165BouncyCastleProvider\u652f\u6301\n        Security.addProvider(new BouncyCastleProvider());\n\n        BigInteger p = new BigInteger(\"883423532389192164791648750360308885314476597252960362792450860609699839\");\n\n        ECFieldFp ecFieldFp = new ECFieldFp(p);\n\n        BigInteger a = new BigInteger(\"7fffffffffffffffffffffff7fffffffffff8000000000007ffffffffffc\", 16);\n\n        BigInteger b = new BigInteger(\"6b016c3bdcf18941d0d654921475ca71a9db2fb27d1d37796185c2942c0a\", 16);\n\n        EllipticCurve ellipticCurve = new EllipticCurve(ecFieldFp, a, b);\n\n        BigInteger x = new BigInteger(\"110282003749548856476348533541186204577905061504881242240149511594420911\");\n\n        BigInteger y = new BigInteger(\"869078407435509378747351873793058868500210384946040694651368759217025454\");\n\n        ECPoint g = new ECPoint(x, y);\n\n        BigInteger n = new BigInteger(\"883423532389192164791648750360308884807550341691627752275345424702807307\");\n\n        ECParameterSpec ecParameterSpec = new ECParameterSpec(ellipticCurve, g, n, 1);\n\n        // \u5b9e\u4f8b\u5316\u5bc6\u94a5\u5bf9\u513f\u751f\u6210\u5668\n        KeyPairGenerator kpg = KeyPairGenerator.getInstance(\"ECDSA\");\n\n        // \u521d\u59cb\u5316\u5bc6\u94a5\u5bf9\u513f\u751f\u6210\u5668\n        kpg.initialize(ecParameterSpec, new SecureRandom());\n\n        // \u751f\u6210\u5bc6\u94a5\u5bf9\u513f\n        KeyPair keypair = kpg.generateKeyPair();\n\n        ECPublicKey publicKey = (ECPublicKey) keypair.getPublic();\n\n        ECPrivateKey privateKey = (ECPrivateKey) keypair.getPrivate();\n\n        // \u5c01\u88c5\u5bc6\u94a5\n        Map<String, Object> map = Maps.newHashMapWithExpectedSize(2);\n\n        map.put(PUBLIC_KEY, publicKey);\n        map.put(PRIVATE_KEY, privateKey);\n\n        return map;\n    }\n}",
+        "exampleID": 1014,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/ToolECDSA.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class CertRASession {\n\n\tpublic CertRASession(String emailPrivate, String phonePrivate) throws Exception {\n\t\tKeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(\"RSA\");\n\t\tRSAKeyGenParameterSpec params = new RSAKeyGenParameterSpec(2048, RSAKeyGenParameterSpec.F4);\n\n\t\tSecureRandom secureRandom = new SecureRandom();\n\t\tsecureRandom.setSeed(System.currentTimeMillis());\n\n\t\tkeyPairGenerator.initialize(params, secureRandom);\n\t\tKeyPair keyPair = keyPairGenerator.genKeyPair();\n\n\t\tthis.privateKey = keyPair.getPrivate();\n\t\tthis.publicKey = keyPair.getPublic();\n\n\t\tthis.emailPrivate = emailPrivate;\n\t\tthis.phonePrivate = phonePrivate;\n\t}\n}",
+        "exampleID": 1015,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/CertRASession.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class DecryptUtil {\n\t\n\tpublic static byte[][] genKeyPairBytes(int keySize)\n\t\t\tthrows NoSuchAlgorithmException {\n\t\tbyte[][] keyPairBytes = new byte[2][];\n\n\t\tKeyPairGenerator gen = KeyPairGenerator.getInstance(\"RSA\");\n\t\tgen.initialize(keySize, new SecureRandom());\n\t\tKeyPair pair = gen.generateKeyPair();\n\n\t\tkeyPairBytes[0] = pair.getPrivate().getEncoded();\n\t\tkeyPairBytes[1] = pair.getPublic().getEncoded();\n\n\t\treturn keyPairBytes;\n\t}\n\n}",
+        "exampleID": 1016,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/DecryptUtil.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public final class EncryptionUtils {    \n    public static KeyPair generateKeyPair() throws NoSuchAlgorithmException {\n        KeyPairGenerator keyGen = KeyPairGenerator.getInstance(\"RSA\");\n        keyGen.initialize(2048, new SecureRandom());\n        return keyGen.generateKeyPair();\n    }\n}",
+        "exampleID": 1017,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/EncryptionUtils.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class X509Utils {\n\n\t/**\n\t * Generate a new keypair.\n\t *\n\t * @return a keypair\n\t * @throws Exception\n\t */\n\tprivate static KeyPair newKeyPair() throws Exception {\n\t\tKeyPairGenerator kpGen = KeyPairGenerator.getInstance(\"RSA\", BouncyCastleProvider.PROVIDER_NAME);\n\t\tkpGen.initialize(2048, new SecureRandom());\n\t\treturn kpGen.generateKeyPair();\n\t}\n}",
+        "exampleID": 1018,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/X509Utils.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class BlockJ {\n\n\tpublic static KeyPair generateKeyPair(long seed) throws Exception {\n\t\n\t\tKeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(\"RSA\");\n\t\tSecureRandom rng = new SecureRandom();\n\t\trng.setSeed(seed);\n\t\tkeyGenerator.initialize(1024, rng);\n    \n\t\treturn (keyGenerator.generateKeyPair());\n\t}\n}",
+        "exampleID": 1019,
+        "label": "negative",
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/BlockJ.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "private KeyPair getRSAKeyPair(boolean export, SecureRandom random) {\n        int length, index;\n        if (export) {\n            length = 512;\n            index = 0;\n        } else {\n            length = 1024;\n            index = 1;\n        }\n\n        synchronized (keys) {\n            KeyPair kp = keys[index].getKeyPair();\n            if (kp == null) {\n                try {\n                    KeyPairGenerator kgen = JsseJce.getKeyPairGenerator(\"RSA\");\n                    kgen.initialize(length, random);\n                    keys[index] = new EphemeralKeyPair(kgen.genKeyPair());\n                    kp = keys[index].getKeyPair();\n                } catch (Exception e) {\n                    // ignore\n                }\n            }\n            return kp;\n        }\n    }\n}",
+        "exampleID": 1020,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/EphemeralKeyManager.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class KeyHelper {\n\n    public static KeyPair generateKeyPair(String type, int size) throws NoSuchAlgorithmException,\n        NoSuchProviderException {\n        KeyPairGenerator keyGen = KeyPairGenerator.getInstance(type);\n        SecureRandom random = new SecureRandom();\n        keyGen.initialize(size, random);\n        random.setSeed(System.currentTimeMillis());\n        return keyGen.generateKeyPair();\n    }\n\n}",
+        "exampleID": 1021,
+        "label": "positive",
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/KeyHelper.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class PKIUtils {\n\n\tpublic static KeyPair generateKeyPair(long seed, String signatureAlgorithm, String rngHashAlgorithm, String rngProvider, int keySize) throws Exception {\n\t\tSecurity.addProvider(new BouncyCastleProvider());\n\t\tKeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(signatureAlgorithm);\n\t\tSecureRandom rng = new SecureRandom();\n\t\trng.setSeed(seed);\n\t\tkeyGenerator.initialize(keySize, rng);\n\t\treturn keyGenerator.generateKeyPair();\n\t}\n\n}",
+        "exampleID": 1022,
+        "label": "negative",
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/PKIUtils.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class ASYM_ENCRYPT  {\n    /** Generates the public/private key pair from the init params */\n    protected void initKeyPair() throws Exception {\n        if (this.key_pair == null) {\n            // generate keys according to the specified algorithms\n            // generate publicKey and Private Key\n            KeyPairGenerator KpairGen=null;\n            if(provider != null && !provider.trim().isEmpty())\n                KpairGen=KeyPairGenerator.getInstance(getAlgorithm(asym_algorithm), provider);\n            else\n                KpairGen=KeyPairGenerator.getInstance(getAlgorithm(asym_algorithm));\n            KpairGen.initialize(asym_keylength,new SecureRandom());\n            key_pair=KpairGen.generateKeyPair();\n        }\n\n        // set up the Cipher to decrypt secret key responses encrypted with our key\n        if(provider != null && !provider.trim().isEmpty())\n            asym_cipher=Cipher.getInstance(asym_algorithm, provider);\n        else\n            asym_cipher=Cipher.getInstance(asym_algorithm);\n        asym_cipher.init(Cipher.DECRYPT_MODE, key_pair.getPrivate());\n    }\n\n}",
+        "exampleID": 1023,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/ASYM_ENCRYPT.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class CertificateMock {\n\n    public static X509Certificate withCN(String cn) {\n        try {\n            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(\"RSA\", \"BC\");\n            keyPairGenerator.initialize(1024, new SecureRandom()); // No ment to be secure!\n\n            KeyPair keyPair = keyPairGenerator.generateKeyPair();\n\n            X509V1CertificateGenerator certGen = new X509V1CertificateGenerator();\n            X500Principal dnName = new X500Principal(String.format(\"CN=%s, C=NO\", cn));\n\n            certGen.setSerialNumber(BigInteger.valueOf(System.currentTimeMillis()));\n            certGen.setSubjectDN(dnName);\n            certGen.setIssuerDN(dnName); // use the same\n            certGen.setNotBefore(new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000));\n            certGen.setNotAfter(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000));\n            certGen.setPublicKey(keyPair.getPublic());\n            certGen.setSignatureAlgorithm(\"SHA256WithRSAEncryption\");\n\n            return certGen.generate(keyPair.getPrivate(), \"BC\");\n        } catch (Exception e) {\n            throw new IllegalStateException(e.getMessage(), e);\n        }\n    }\n\n}",
+        "exampleID": 1024,
+        "label": "negative",
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/CertificateMock.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class AesUtil {\n\n    private static String aes(String content, String password, int type) {\n        try {\n            KeyGenerator generator = KeyGenerator.getInstance(SecurityConst.ENCRYPTION_ALGORITHM);\n            SecureRandom random = SecureRandom.getInstance(SecurityConst.RNG_ALGORITHM);\n            random.setSeed(password.getBytes(StandardCharsets.UTF_8));\n            generator.init(128, random);\n            SecretKey secretKey = generator.generateKey();\n            byte[] enCodeFormat = secretKey.getEncoded();\n            SecretKeySpec key = new SecretKeySpec(enCodeFormat, SecurityConst.ENCRYPTION_ALGORITHM);\n            Cipher cipher = Cipher.getInstance(SecurityConst.ENCRYPTION_ALGORITHM);\n            cipher.init(type, key);\n            if (type == Cipher.ENCRYPT_MODE) {\n                byte[] byteContent = content.getBytes(StandardCharsets.UTF_8.name());\n                return ByteUtils.toHexString(cipher.doFinal(byteContent));\n            } else {\n                byte[] byteContent = ByteUtils.fromHexString(content);\n                return new String(cipher.doFinal(byteContent), StandardCharsets.UTF_8);\n            }\n        } catch (Exception e) {\n            log.error(e.getMessage(), e);\n        }\n\n        return null;\n    }\n\n}",
+        "exampleID": 1025,
+        
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/AesUtil.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class DSA {\n\n    public static final String ALGORITHM = \"DSA\";\n    private static final int   KEY_SIZE  = 1024;\n\n    public static KeyPair genKeyPair(String seed) throws Exception {\n        KeyPairGenerator keygen = KeyPairGenerator.getInstance(ALGORITHM);\n        // \u521d\u59cb\u5316\u968f\u673a\u4ea7\u751f\u5668\n        SecureRandom secureRandom = new SecureRandom();\n        secureRandom.setSeed(seed.getBytes());\n        keygen.initialize(KEY_SIZE, secureRandom);\n        KeyPair keyPair = keygen.genKeyPair();\n        return keyPair;\n    }\n\n}",
+        "exampleID": 1026,
+        "label": "negative",
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/DSA.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class CertificateAuthority {\n  private static KeyPair generateKeyPair(String keyType) throws NoSuchAlgorithmException {\n    KeyPairGenerator keyGen = KeyPairGenerator.getInstance(keyType);\n    keyGen.initialize(2048, new SecureRandom());\n    return keyGen.generateKeyPair();\n  }\n}",
+        "exampleID": 1027,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/CertificateAuthority.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "privateKey;\n        final ECPublicKey publicKey;\n        final NamedGroup namedGroup;\n        \n        private ECDHEPossession(NamedGroup namedGroup, SecureRandom random) {\n            try {\n                KeyPairGenerator kpg = KeyPairGenerator.getInstance(\"EC\");\n                ECGenParameterSpec params =\n                        (ECGenParameterSpec)namedGroup.getParameterSpec();\n                kpg.initialize(params, random);\n                KeyPair kp = kpg.generateKeyPair();\n                privateKey = kp.getPrivate();\n                publicKey = (ECPublicKey)kp.getPublic();\n            } catch (GeneralSecurityException e) {\n                throw new RuntimeException(\n                    \"Could not generate ECDH keypair\", e);\n            }\n\n            this.namedGroup = namedGroup;\n        }\n}",
+        "exampleID": 1028,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/ECDHEPossession.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "private key to a \n// file given a expiry time and the master private key.\n// \n// Modify the crawler so that it reads the TimedPublicKey/private key from a file\n// instead of generating it on the fly.\npublic class Generator {\n\tpublic static List<Object> GeneratePublisherKey(long timeoutMS) {\n\t\tbyte[] rawPrivKey = MovieAdder.getMasterPrivate();\n\t\tif (rawPrivKey == null) {\n\t\t\tSystem.err.println(\"Cannot retrieve private key, exiting\");\n\t\t\treturn null;\n\t\t}\n\t\tPKCS8EncodedKeySpec privKeySpec = \n\t\t\tnew PKCS8EncodedKeySpec(rawPrivKey);\n\t\tPrivateKey masterPrivKey = null;\n\t\ttry {\n\t\t\tKeyFactory keyFactory = KeyFactory.getInstance(MovieAdder.defaultKeyInst);\n\t\t\tmasterPrivKey = keyFactory.generatePrivate(privKeySpec);\n\t\t} catch (NoSuchAlgorithmException e) {\n\t\t\tSystem.err.println(\"Cannot parse private key, exiting\");\n\t\t\te.printStackTrace();\n\t\t\treturn null;\n\t\t} catch (InvalidKeySpecException e) {\n\t\t\tSystem.err.println(\"Cannot parse private key, exiting\");\n\t\t\te.printStackTrace();\n\t\t\treturn null;\n\t\t}\n\t\t\t\t\t\n\t\t// Generate new public/private key pair\n\t\tKeyPairGenerator keyGen = null;\n\t\ttry {\n\t\t\tkeyGen = KeyPairGenerator.getInstance(\"DSA\");\n\t\t\tSecureRandom random = new SecureRandom();\n\t\t\tkeyGen.initialize(1024, random);\t\t\t\n\t\t} catch (NoSuchAlgorithmException e) {\n\t\t\tSystem.err.println(\"Cannot generate keypair, exiting\");\n\t\t\te.printStackTrace();\n\t\t\treturn null;\n\t\t} catch (NoSuchProviderException e) {\n\t\t\tSystem.err.println(\"Cannot generate keypair, exiting\");\n\t\t\te.printStackTrace();\n\t\t\treturn null;\n\t\t}\t\t\n\t\tKeyPair pair = keyGen.generateKeyPair();\n\t\tPrivateKey prodPriv = pair.getPrivate();\n\t\tPublicKey prodPub = pair.getPublic();\n\t\t\n\t\t// Have a timeout of 30 days\n\t\t//long timeoutMS = 30L * 24L * 60L * 60L * 1000L;\n\t\t//System.out.println(\"Timeout in MS is: \" + timeoutMS);\n\t\tDate dueDate = new Date(System.currentTimeMillis() + timeoutMS);\n\t\t//System.out.println(\"Due dates is: \" + dueDate.getTime());\n\t\t//System.out.println(\"Cur time is: \" + new Date().getTime());\n\t\tTimedPublicKey timedKey = new TimedPublicKey(prodPub.getEncoded(), dueDate);\n\t\t\t\t\n\t\t// Generate signature for timedKey\n\t\tbyte[] prodSig = null;\n\t\ttry {\n\t\t\tSignature dsa = Signature.getInstance(\"SHA1withDSA\");\n\t\t\tdsa.initSign(masterPrivKey);\n\t\t\t/* Update and sign the data */\n\t\t\tdsa.update(timedKey.toByteArray());\n\t\t\tprodSig = dsa.sign();\t\t\t\n\t\t} catch (NoSuchAlgorithmException e) {\n\t\t\tSystem.err.println(\"Cannot generate signature for timed key, exiting\");\n\t\t\te.printStackTrace();\n\t\t\treturn null;\n\t\t} catch (InvalidKeyException e) {\n\t\t\tSystem.err.println(\"Cannot generate signature for timed key, exiting\");\n\t\t\te.printStackTrace();\n\t\t\treturn null;\n\t\t} catch (SignatureException e) {\n\t\t\tSystem.err.println(\"Cannot generate signature for timed key, exiting\");\n\t\t\te.printStackTrace();\n\t\t\treturn null;\n\t\t}\t\t\n\t\tList<Object> keyList = new ArrayList<Object>();\t\t\n\t\tkeyList.add(prodSig);\n\t\tkeyList.add(timedKey);\n\t\tkeyList.add(prodPriv);\t\n\t\treturn keyList;\n\t}\n}",
+        "exampleID": 1029,
+        "dataset": "random",
+        "filepath": "/Users/hongjinkang/repos/active_learning_interface/GithubExamples/SecureRandom/Generator.java"
+    }
+]

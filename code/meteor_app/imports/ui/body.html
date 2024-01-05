@@ -1,0 +1,1106 @@
+<body>
+  
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.min.css"> -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.all.min.js"></script>   -->
+
+  <link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+
+
+
+  <div class="container-fluid">
+    <div class="row" style="padding-top: 2em;">
+      <b><center>
+      <div class="col-md-12 hidden">
+        <h4>Choose an API: 
+          <div class="dropdown" style="display: inline-block;">
+            <select id="change-dataset">
+
+              <option value="init" selected>Cipher.init()</option>
+             
+            </select>
+          </div>
+
+          <div class="dropdown"  style="display: none; inline-block;">
+            <label for="interface">Toggle Interface</label>
+            <select id="interface">
+              <option value="ali" selected>Active Learning</option>
+              </select>
+          </div>
+        </h4>
+      </div>
+    </center>
+  </b>
+  
+
+    <div class="col-md-4" style="padding-top: .5em; border-right:  solid black;  align-items: stretch; justify-content: space-between;">
+
+
+      <h3 class="center" style="margin-top:5px; margin-bottom: 5px; height:16px;"> Inferred Pattern </h3> 
+
+      <div class="loading-bar">
+        <!-- <div class="progress hidden"></div> -->
+        <div class="status-box hidden alert alert-success"></div>
+      </div>
+
+      <!-- <span> API: <span class="dropdown" style="display: inline-block; ">
+        <select id="change-dataset" style="width:100%">
+
+          <option value="init" selected>Cipher.init()</option>
+         
+        </select>
+      </span>  
+    </span>-->
+      <!-- with <span class="">{{discriminativeSubgraphcount }} patterns</span> (labelled examples) -->
+    </div>
+    <div class="col-md-8 row analysis-region bg-light" >
+      
+      <div style="align-content: center; " class="row">
+        <h5 class="center"></h5>
+      </div>
+      <div class="col-md-12 center" style="border-bottom: solid grey;">
+        <!-- <span class="{{isActiveOrHiddenByLabel ''}}">Search code examples:</span> -->
+        <!-- <span class="btn all-examples {{isActive 'all' }} {{isActive 'matching'}}"> {{allOrMatchingText}} </span> -->
+        <!-- <span class="btn matching-examples {{isPaletteVisible 'matching' }}"> Match Palette</span> -->
+        <!-- <span class="btn unlabelled-examples {{isActiveOrHiddenByLabel 'unlabelled' }}"> Unlabelled</span> -->
+        <!-- <span class="btn labelled-examples {{isActiveOrHiddenByLabel 'labelled' }}"> Labelled</span> -->
+        
+        
+        <!-- <input class="keyword-search"  placeholder="Search examples" val="{{currentKeyword}}"/> -->
+
+        
+        <!-- <span class="btn open-frequent-subgraph-modal" data-toggle="modal" data-target="#frequentSubgraphModal">View patterns summarizing examples</span> -->
+        <!-- <span class="btn open-matching-examples-modal" data-toggle="modal" data-target="#matchingExamplesModal">Bootstrap pattern B</span> -->
+        <!-- or  -->
+        <span class="btn new-example" data-toggle="modal" data-target="#newExampleModal">Add Example</span>
+        <!-- <span class="btn connect-repo" data-toggle="modal" data-target="#connectToRepoModal">Apply Pattern to another repository</span> -->
+        <!-- <span class="btn open-label-query-examples-modal" data-toggle="modal" data-target="#labelQueryExamplesModal">Step 1. Bootstrap initial pattern</span> -->
+        <!-- <span class="btn open-openai-examples-modal" data-toggle="modal" data-target="#openaiExamplesModal">Bootstrap initial pattern using LLM</span> -->
+        
+        <!-- <span class="btn" data-toggle="modal" data-target="#testPatternModal" {{disableIfEmptyPalette}}>Add Pattern to Bag</span> -->
+        
+        
+        <!-- <span class="btn" data-toggle="modal" data-target="#startPatternModal">Select base pattern</span> -->
+      </div>
+
+    <div class="modal" id="newExampleModal" tabindex="-1" role="dialog" aria-labelledby="newExampleModal" aria-hidden="true" style="margin-left:0;">
+      <div class="" role="document">
+        <div class="modal-content ">
+          <div class="modal-header">
+            <h5 class="modal-title" id="newExampleModal">Add new example</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" style="height:80vh">
+            <div class="form-group">
+              <label for="new-example-content">Add an example of a positive/negative example </label>
+
+
+              <textarea class="form-control" id="new-example-content" rows="3" style="height:50vh"></textarea>
+
+            </div>
+            
+          </div>
+          <div class="modal-footer">
+            <!-- Positive -->
+            <!-- <input type="radio" data-option="positive" value="positive" class="new-example-label-positive" /> -->
+
+            <select name="" class="new-example-label" id="new-example-label">
+              <option value="positive" selected>Positive</option>
+              <option value="negative">Negative</option>
+            </select>
+            <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button> -->
+            <button type="button" class="btn btn-primary add-new-example">Add example</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="connectToRepoModal" tabindex="-1" role="dialog" aria-labelledby="connectToRepoModal" aria-hidden="true" style="margin-left:0;">
+      <div class="" role="document" >
+        <div class="modal-content ">
+          <div class="modal-header">
+            <h5 class="modal-title" id="connectToRepoModal">Apply pattern to new repository</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" style="height:80vh">
+            <div class="form-group">
+              <label for="repo-path">Add the path of the repository</label>
+              <textarea class="form-control" id="repo-path" rows="3" style=""></textarea>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary connect-repo-button">Apply</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="testPatternModal" tabindex="-1" role="dialog" data-backdrop="false" aria-labelledby="testPatternModal" aria-hidden="true" style="margin-left:30%; width:50%; ">
+      <div class="" role="document" >
+        <div class="modal-content ">
+          <div class="modal-header">
+            <h5 class="modal-title" id="testPatternModal">Apply pattern to new repository</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" style="height:80vh">
+
+            Once you are ready, click "Apply" to finalize the pattern. 
+            The matching examples will be removed from the dataset, so you can focus on the next pattern.
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success add-button add-to-bag">Apply</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="taskCompleteModal" tabindex="-1" role="dialog" data-backdrop="false" aria-labelledby="taskCompleteModal" aria-hidden="true" style="margin-left:30%; width:50%; ">
+      <div class="" role="document" >
+        <div class="modal-content ">
+          <div class="modal-header">
+            <h5 class="modal-title" id="taskCompleteModal">Task Complete!</h5>
+
+          </div>
+          <div class="modal-body" style="height:80vh">
+            <!-- On the hidden, test dataset, the pattern matches {{recallOnTestSet}}% of the misuses.  -->
+            Task Complete!
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal" id="counterFactualModal" tabindex="-1" role="dialog" aria-labelledby="counterFactualModal" aria-hidden="true" style="margin-left:0;">
+      <div class="" role="document">
+        <div class="modal-content ">
+          <div class="modal-header">
+            <h5 class="modal-title" id="counterFactualModalTitle">What-If</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" style="height:85vh; max-height: 100%;">
+            <div class="row">
+            <p class="center" style="text-align:center; display:inline;">Comparing examples matching <span class="code-background {{whatIfSubgraphAColor}}">{{{displayNode whatIfSubgraphA}}} </span>  and <span class="code-background {{whatIfSubgraphBColor}}">{{{displayNode whatIfSubgraphB}}}</span>. </p>
+          </div>
+            <!-- because <span class="code-background">{{{displayNode whatIfSubgraphB}}}</span> does not match the following API usages: -->
+            <!-- {{canSubgraphBBeImproved}} -->
+            
+            <div class="row" style="padding-top:16px">
+              <div class="col-md-6" >
+                <p style="text-align:center">Matched by <span class="code-background {{whatIfSubgraphAColor}}">{{{displayNode whatIfSubgraphA}}}</span> but not <span class="code-background {{whatIfSubgraphBColor}}">{{{displayNode whatIfSubgraphB}}}</span></p>
+                {{#if showExamplesMatchedByAAndNotB}}
+                {{#each showExamplesMatchedByAAndNotB}}
+                {{> example}}
+                {{/each}}
+                {{else}}
+                  <p class="center">None</p>
+                {{/if}}
+              </div>
+              <div class="col-md-6">
+                <p style="text-align:center">Matched by <span class="code-background {{whatIfSubgraphBColor}}">{{{displayNode whatIfSubgraphB}}}</span> but not <span class="code-background {{whatIfSubgraphAColor}}">{{{displayNode whatIfSubgraphA}}}</span></p>
+                {{#if showExamplesMatchedByBAndNotA}}
+                {{#each showExamplesMatchedByBAndNotA}}
+                {{> example}}
+                {{/each}}
+                {{else}}
+                <p class="center">None</p>
+                {{/if}}
+              </div>
+            </div>
+           
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close" style="margin:auto">
+              <span aria-hidden="btn btn-primary true">Close</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="startPatternModal" tabindex="-1" role="dialog" aria-labelledby="startPatternModal" aria-hidden="true" style="margin-left:0;">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content ">
+          <div class="modal-header">
+            <h5 class="modal-title" id="startPatternModalTitle">Select base pattern</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" style="height:80vh">
+
+          </div>
+          <div class="modal-footer">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="baggedExamplesModal" tabindex="-1" role="dialog" aria-labelledby="baggedExamplesModal" aria-hidden="true" style="margin-left:0;">
+      <div class="" role="document">
+        <div class="modal-content ">
+          <div class="modal-header">
+            <h5 class="modal-title" id="baggedExamplesModal">Examples Matching the Pattern</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" style="height:90vh; max-height: 100%;">
+
+            {{#each matchingExamples}}
+            {{> example}}
+            {{/each}}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+   
+
+      <!-- <div class="col-md-5" style="padding-top: .5em; padding-right: .5em;  border-right:  solid black"> -->
+        <!-- <strong class="center"> Add program elements to the Palette </strong> -->
+        <!-- containing <span class="">{{ frequentSubgraphcount }} patterns</span> (population) -->
+      <!-- </div> -->
+
+      <div class="col-md-12 {{hideIfNotBaseline}}">
+        <!-- $('#labelAllExamplesModal').modal('show'); -->
+        <span class="view-baseline-matching-examples underline_on_hover btn btn-primary" data-toggle="modal" data-target="#labelAllExamplesModal" href="#" style="">View and label examples</span>
+
+      </div>
+      <div class="col-md-12 {{hideIfBaseline}}" style="padding-top: .5em;">
+        <div class="col-md-10 row">
+          <!-- <p class="col-md-4" style="font-weight: bolder"> <span class="examplePanelType">&nbsp;  {{matchingCount}} &nbsp; </span> <span> API usages</span></p> -->
+
+            
+          <!-- <span class="center text-muted          " style="  ">({{filteredBagCount}} examples are already covered)</span> -->
+
+          <!-- <div style="display: flex; justify-content: space-between;" > -->
+            <!-- <span class="btn label-all-positive" style="margin-right:auto">Label all positive</span> -->
+
+            <!-- <span class="btn label-all-negative" style="margin-left:auto">Label all negative</span> -->
+          <!-- </div> -->
+          <!-- <button type="button" class="btn btn-primary reset-all" data-toggle="button" style="padding: 2px; margin: 2px;" title="remove all active filters">Reset</button> -->
+          <!-- <span class="label label-default">Active Filters:</span> -->
+          <h3>Candidate Features</h3>
+          <!-- <div class="col-md-8" > <span></span></div> -->
+          <div class="col-md-5" style="margin-left:60%">
+            <div class="slidecontainer">
+              <div class="row">
+                <div class="col-md-7" title="(S)upport measures how frequently a feature appears among the examples matched by the pattern"><strong>S</strong>:  <div class="hovertooltip">Support
+                  <span class="hovertooltiptext">(S)upport measures how frequently a feature appears among the examples matched by the pattern</span>
+                </div></div>
+                <!-- <span>(R)epresentative measures how frequently a feature appears among the examples matched by the pattern</span> -->
+                <div class="col-md-7"><input type="range" min="0" max="100" value="50" class="slider" id="representativeSlider"></div>
+              </div>
+                <!-- <div class="row">
+                <div class="col-md-5">Diversity</div>
+                <div class="col-md-7">
+                  <input type="range" min="0" max="100" value="50" class="slider" id="diversitySlider">
+                </div>
+              </div> -->
+              <div class="row">
+                <div class="col-md-7" title="(I)nformativeness measures how well a feature distinguishes positive examples from negative examples. The higher the informativeness, the more likely the feature is useful for the pattern."><strong>I</strong>: 
+                  <div class="hovertooltip">Informativeness
+                    <span class="hovertooltiptext">(I)nformativeness measures how well a feature distinguishes positive examples from negative examples. The higher the informativeness, the more likely the feature is useful for the pattern. A good strategy is to suggest one feature from the features with highest informativeness.</span>
+                  </div>
+                  </div>
+                <!-- <span>(I)nformativeness measures how well a feature distinguishes positive examples from negative examples. The higher the informativeness, the more likely the feature is useful for the pattern.</span> -->
+                <div class="col-md-7"><input type="range" min="0" max="100" value="50" class="slider" id="informativenessSlider"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="col-md-5">
+            <span>Impact Analysis: click on the feature.</span>
+            <span>What-If Analysis: click on suggest checkboxes of two features.</span>
+
+          </div> -->
+        </div>
+        
+      </div>
+    </div>
+     
+  </div>
+  <div style="max-height:100%">
+    <div class="row">
+     
+      
+      <div  class="col-md-4" style="height: 60vh; border-right:  solid black">
+        <div id="pattern-palette" style=" overflow: scroll; padding-left:20px;">
+          
+        
+          <!-- {{#each topologicalSortNodesOfMinedDiscriminativeSubgraphs}} -->
+
+
+          {{#each discriminativeSubgraphsSkeleton}}
+          
+            <div class="block-level hideRow-100" style="padding-top:0">
+              <!-- <div class="col-md-1"></div> -->
+              {{> discriminativeFeatureByRole}}
+
+            </div>
+          {{/each}}  
+
+          
+        </div>
+
+        <div class="" >
+          <!-- <span class="add-to-bag-warning-message">{{addToBagWarningMessage}}</span> -->
+      
+      
+          <div class="hidden ">
+          <input class="add-to-bag-color" type="text" placeholder="Pick a color" data-coloris style="margin-top:16px;">
+        </div>
+        
+   
+        </div>
+        <!-- <div class="bag new-bag-container" style="width: 100%"> -->
+    
+      
+          
+
+        
+        
+
+
+        <div class="" style=" display:block;">
+        
+          <!-- {{#each  bag in  baggedPatterns}} -->
+              
+              <!-- <div class=" bag bag-{{bag.bagId}}" data-bag="{{bag.bagId}}" style="background-color:{{bag.color}}; min-width: 132px; width:100%"> -->
+                <!-- <span class="center bag-text">Covers {{examplesMatched bag.bagId}} examples <span class="text-danger">{{misusesMatchedText bag.bagId}}</span>  </span>   -->
+                <!-- <div class="center"> -->
+                <!-- <span class="center btn bag-edit" data-bag="{{bag.bagId}}" style="width:64px; ">Edit</span>  -->
+                
+                <!-- </div> -->
+                <!-- <div class="center">
+                  <span class="center btn {{bagPreviewClass bag.bagId}}" data-bag="{{bag.bagId}}" style="width:128px; ">{{bagPreviewText bag.bagId}}</span> 
+                </div> -->
+  
+                <!-- <div> -->
+                  <!-- <img src="{{bagImage bag.bagId}}"/> -->
+                <!-- </div> -->
+              <!-- </div> -->
+  
+          <!-- {{/each}}   -->
+
+          
+
+            <!-- <div class="bag"> -->
+              <!-- <span class="center text-dark">Covers {{examplesMatchedBySkeleton}} Examples </span> -->
+              <!-- <div class="center"> -->
+              <!-- <a class="btn btn-success add-button add-to-bag  {{disableIfEmptyPalette}}" style="width: 50%; margin-top:4px">Add pattern and hide {{matchingCount}} matching examples </a> -->
+              <!-- </div> -->
+            <!-- </div> -->
+
+          <div style="padding-top:36px">
+            
+            <div style="text-align: center;"> <div class="hovertooltip"><strong>Progress: </strong> 
+              <span class="hovertooltiptext">This table shows the breakdown of code examples by their label (positive, negative, unlabelled) and if they match the pattern</span>
+            </div>
+            </div>
+            <div class="row">
+              <!-- <a class="open-matching-examples-modal" data-toggle="modal" data-target="#matchingExamplesModal">{{countLabelledExamples}} labelled examples</a>  -->
+
+              
+              
+              
+              <table>
+                <tr style="border-bottom: 1px solid black">
+                  <th style="">Match Pattern?</th>
+                  <th><a style="background-color: rgba(0,180,0, 0.6); color:white;" class="open-matching-examples-modal" data-toggle="modal" data-target="#matchingExamplesModal">Positive</a></th> 
+                  <th><span style="background-color: rgba(0,100,225, 0.6); color:white;" >Unlabelled</span></th>
+                  <th><a style="background-color: rgba(180,0,0, 0.6); color:white;" class="open-matching-examples-modal" data-toggle="modal" data-target="#matchingExamplesModal">Negative</a></th>
+                </tr>
+                <tr>
+                  <td style="">
+                    
+                    <span class="view-bag-examples underline_on_hover" data-toggle="modal" data-target="#baggedExamplesModal" href="#" style="">Yes</span>
+                    
+                  </td>
+                  <td> 
+                    
+                    <div class="hovertooltip">{{countMatchingPositiveExamples}} 
+                      <span class="hovertooltiptext">Number of <strong>positive</strong> examples matching the pattern.</span>
+                    </div>
+                  </td>
+                  <td> {{countMatchingUnlabelledExamples}} </td>
+                  <td> {{countMatchingNegativeExamples}} </td>
+                  
+                </tr>
+                <tr>
+                  <td style="">No</td>
+                  <td> {{countUnmatchingPositiveExamples}} </td>
+                  <td> {{countUnmatchingUnlabelledExamples}} </td>
+                  <td> 
+                    <div class="hovertooltip">{{countUnmatchingNegativeExamples}} 
+                      <span class="hovertooltiptext">Number of <strong>negative</strong> examples that do not match the pattern. Your goal is to maximize this number.</span>
+                    </div>
+
+                  </td>
+                  
+                </tr>
+              </table>
+              <!-- <a class="view-bag-examples" data-toggle="modal" data-target="#baggedExamplesModal" href="#">{{matchingCount}} examples matching the above pattern</a>  -->
+
+            </div>
+            <div>
+
+
+            </div>
+
+            <!-- <a class="view-unmatched-examples" data-toggle="modal" data-target="#unmatchedExamplesModal" href="#">{{notMatchingCount}} examples do not match</a>  -->
+            
+          </div>
+          <!-- <div class="{{hideIfBaseline}}" style="margin-top:100px">
+            <div>Made a mistake? Want to construct a new pattern?</div>
+            <a class="reset-all-btn">Reset All</a>
+            <div style="padding-top:16px">
+              <a class="reset-pattern-btn">Reset Pattern</a> or 
+              <a class="reset-labels-btn">Reset Labels</a> 
+            </div>
+          </div> -->
+
+          <div class="col-md-6" style="margin-top: 20px">
+
+            <span class="btn end-task-btn {{primaryButtonIfZeroCountMatchingNegativeExamples}}" style="margin-left:10%">End task</span>
+          </div>
+          <div class="col-md-6 {{hideIfBaseline}}" style="margin-top: 50px">
+            Got stuck? Made a bad choice?
+            <a class="reset-state-btn" style="margin-left:10%">Restart</a>
+          </div>
+          <!-- {{bagsRendered}} -->
+        </div>
+        
+          <!-- <div style="padding-top:300px"> -->
+            <!-- <span> (For Debugging) Alternative subgraphs </span> -->
+              
+            <!-- <a class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#alternativeSubgraphsCollapse" data-target="#alternativeSubgraphsCollapse" data-toggle="collapse" href="#alternativeSubgraphsCollapse" role="button" aria-expanded="false" aria-controls="alternativeSubgraphsCollapse">Show alternative patterns</a> -->
+            <!-- <div > -->
+            <!-- {{#each topologicalSortNodesOfAlternativeDiscriminativeSubgraphs}} -->
+                <!-- <div class="row block-level hideRow-100" style="padding-top:1em"> -->
+                  <!-- <div class="col-md-1"></div> -->
+                  <!-- {{> node}} -->
+
+                <!-- </div> -->
+              <!-- {{/each}}   -->
+            <!-- </div> -->
+
+           
+
+          <!-- </div> -->
+        <!-- {{/each}} -->
+        
+      </div>
+      <div class="col-md-8 row bg-light">
+        
+        <!-- <div class="col-md-5" style="height: 100vh; overflow: scroll; border-right:  solid black">
+
+    
+        </div> -->
+      
+        <!-- </div> -->
+        <div class="col-md-12 bg-light {{hideIfBaseline}}" style="height: 100vh; overflow: scroll;">
+          <div class="row"><div class="col-md-1"> <strong>Suggest</strong> </div>
+          <div class="col-md-1"> <strong>Row #</strong> </div>  
+          <div class="" style="width: 50px" title="(R)upport measures how frequently a feature appears among the examples matched by the pattern"> <strong>S</strong></div> 
+          <div class="col-md-1" title="(I)nformativeness measures how well a feature distinguishes positive examples from negative examples. The higher the informativeness, the more likely the feature is useful for the pattern."> <strong>I</strong> </div>  
+          <div class="col-md-7"> 
+              <div class="hovertooltip"><strong> Feature </strong>
+                <span class="hovertooltiptext">Click on each feature to display a breakdown of its impact on matching examples if included in the pattern. Click on the feature again to hide the analysis.</span>
+              </div>
+          </div> </div>
+
+          {{#if clusteredExamplesFollowingConfig}}
+          {{#each clusteredExamplesFollowingConfig}}
+            {{> exampleClusterByRole}}
+          {{/each}}
+          {{else}}
+            <div style="margin-top:50px; margin-bottom:70px"><strong>Please bootstrap a pattern using <a class="open-label-query-examples-modal btn btn-primary" data-toggle="modal" data-target="#labelQueryExamplesModal">predefined examples</a>  or <a class="open-label-all-examples-modal btn btn-primary" data-toggle="modal" data-target="#labelAllExamplesModal">view all examples</a>  </strong></div>
+            <div>Afterwards, you will be able to provide feedback to SURF to refine or reinfer a pattern in this panel.</div>
+
+            <!-- <button class="btn btn-primary " data-toggle="modal" data-target="#labelQueryExamplesModal">Bootstrap Pattern</button> -->
+            <div style="padding-bottom:30vh"></div>
+          {{/if}}
+          <!-- {{#each filteredExamples}} -->
+          <!-- {{> example}} -->
+          <!-- {{/each}} -->
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-3 bg-success text-white">Optimal</div>            
+              </div>
+              <div class="row">
+                <div class="col-md-3 bg-warning">Redundant</div>
+              </div>
+              <div class="row">
+                <div class="col-md-3 bg-danger text-white">May be non-optimal</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <span class="loading-text hidden">Loading...</span>
+              <span class="btn btn-primary refine-pattern-btn {{disabledIfNoHints}}">Reinfer pattern</span>
+            </div>
+
+           
+          </div>
+
+        </div>
+
+        
+        
+      </div>
+      
+    </div>
+    
+      
+  </div>
+  <div class="row " style="display:none; border : 1px solid black;   border-radius: 25px; margin-left: 4px; margin-right:4px; margin-bottom: 8px;  ">
+      <span class="center" ><h3>Bag of patterns</h3>  </span>
+      
+      
+      
+      <a class="view-bag-examples center" data-toggle="modal" data-target="#baggedExamplesModal" href="#">View IDs of examples matched</a> 
+
+  </div>
+  </div>
+  <div class="modal" id="matchingExamplesModal" tabindex="-1" role="dialog" aria-labelledby="matchingExamplesModal" aria-hidden="true" style="margin-left:0;">
+    <div class="" role="document">
+      <div class="modal-content ">
+        <div class="modal-header">
+          <h5 class="modal-title" id="matchingExamplesModal">Positive and Negative Examples</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body row" style="height:85vh; max-height:100vh;">
+          <!-- <div class="col-md-4"> -->
+            <!-- {{#each topologicalSortMinedSuggestedPatterns}} -->
+            <!-- <div class="row block-level hideRow-100" style="padding-top:1em"> -->
+              <!-- <div class="col-md-1"></div> -->
+              <!-- {{> frequentNode}} -->
+
+            <!-- </div> -->
+          <!-- {{/each}}    -->
+          <!-- </div> -->
+          <div class="col-md-6">
+            <!-- {{count}} matching examples  -->
+             <!-- {{#each filteredExamples}} -->
+             {{#each labelledPositiveExamples}}
+              {{> example}}
+              {{/each}}
+            </div>
+
+          <div class="col-md-6">
+            <!-- {{count}} matching examples  -->
+              <!-- {{#each filteredExamples}} -->
+              {{#each labelledNegativeExamples}}
+              {{> example}}
+              {{/each}}
+            </div>
+        </div>
+        <div class="modal-footer">
+
+          <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close" style="margin:auto">
+            <span aria-hidden="true">Close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="modal" id="labelQueryExamplesModal" tabindex="-1" role="dialog" aria-labelledby="labelQueryExamplesModal" aria-hidden="true" style="margin-left:0;">
+    <div class="" role="document">
+      <div class="modal-content ">
+        <div class="modal-header">
+          <h5 class="modal-title" id="labelQueryExamplesModal">Bootstrap a pattern</h5>
+          
+
+          
+          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+        </div>
+        <div class="modal-body row" style="height:100vh; max-height:100vh;">
+          <span>The following are the examples indicated as positive (green header) and negative (red header). 
+            </span>
+            <span>
+            Scroll down and click on the Infer Pattern button at the bottom of the page.</span>
+          
+          <div class="col-md-7">
+            <!-- {{queryCount}} Examples to label -->
+              {{#each queryExamples}}
+                {{> example}}
+              {{/each}}
+              
+            </div>
+            <div class="row">
+              <div class="col-md-5">
+              </div>
+              <div class="col-md-1">
+                <span class="btn infer-pattern-btn btn-primary">Infer pattern</span>
+              </div>
+              
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="labelAllExamplesModal" tabindex="-1" role="dialog" aria-labelledby="labelAllExamplesModal" aria-hidden="true" style="margin-left:0;">
+    <div class="" role="document">
+      <div class="modal-content ">
+        <div class="modal-header">
+          <h5 class="modal-title" id="labelAllExamplesModal">View all examples</h5>
+          
+
+          
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body row" style="height:100vh; max-height:100vh;">
+          <!-- <span>Once you are done, click on the Infer Pattern button right at the bottom</span> -->
+          <p>Green: positive. Red: negative. Blue: unlabelled (could be either positive or negative)</p>
+          <p>You may skip an example if you wish to.</p>
+          
+          <div class="col-md-7">
+            <!-- {{queryCount}} Examples to label -->
+              {{#each baselineExamples}}
+                {{> example}}
+              {{/each}}
+              
+            </div>
+            <div class="row">
+              <div class="col-md-5">
+              </div>
+              <div class="col-md-1">
+                <span style="{{showIfNoDiscriminativeSubgraphs}}">Loading ... (label more examples (again) if the button cannot be clicked)</span>
+                <span class="btn baseline-infer-pattern-btn btn-primary {{disabledIfNoDiscriminativeSubgraphs}}">Infer pattern </span>
+              </div>
+              
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="openaiExamplesModal" tabindex="-1" role="dialog" aria-labelledby="openaiExamplesModal" aria-hidden="true" style="margin-left:0;">
+    <div class="" role="document">
+      <div class="modal-content ">
+        <div class="modal-header">
+          <h5 class="modal-title" id="openaiExamplesModalTitle">Label the following API Usages</h5>
+
+          <span class="btn openai-infer-pattern-btn ">Infer pattern</span>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body row" style="height:100vh; max-height:100vh;">
+          <div class="col-md-7">
+              {{#each openaiExamples}}
+                {{> openaiExample}}
+              {{/each}}
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  
+</body>
+
+
+<template name="example">
+  <div>
+   <!-- <a href="{{url}}" target="_blank">Link to the GitHub source code</a> -->
+
+   <div class="" style="background-color: {{exampleColoring this}}; border-radius: 5px 5px 0 0; color:white">
+    <!-- <span class="center" style="">Example {{exampleID}}</span> -->
+    {{#if prelabelled}}
+      
+    <div class="center" style="">Example {{exampleID}}: </div>
+
+    <div class="center">
+      <span style="margin-right:4px; padding-left:8px; {{showIfPositiveLabel this}}"><strong>Positive</strong></span>
+
+    <span style="margin-left:50%; margin-right:4px; {{showIfNegativeLabel this}}"><strong>Negative</strong></span>
+    </div>
+    {{else}}
+
+    <div class="center">Example {{exampleID}}: </div>
+
+    <div class="center">
+    <span class=""  style="margin-right:4px; padding-left:8px">Positive</span>
+      <input type="radio" label="{{label}}" name="{{dataset}}--{{exampleID}}--positive--{{clusterContext}}" {{checkedIfPositiveLabel this}} data-method-name="{{methodName rawCode}}" data-option="positive" value="positive" class="toggle-checked labelRadio"/>
+      
+      <!-- <span style="margin:auto; text-align: center;  {{showIfUnlabelled this}}" class="{{hideIfBaseline}}"><strong>Unlabelled</strong></span> -->
+
+      <span class="" style="margin-left:50%; margin-right:4px;">Negative</span>
+      <input type="radio" label="{{label}}" name="{{dataset}}--{{exampleID}}--negative--{{clusterContext}}" {{checkedIfNegativeLabel this}}  data-method-name="{{methodName rawCode}}" data-option="negative" value="negative" class="toggle-checked labelRadio"/>
+    </div>
+    
+    {{/if}}
+  </div>
+    
+   <span id="exampleID{{exampleID}}-{{clusterContext}}" class="example exampleID{{exampleID}}" data-additional="{{additionalNode}}"><pre class=""><code class="language-java">{{rawCode}}</code></pre>
+    <span class="match-explanation center" style="display:none; margin-left:24px; margin-right:24px"></span>
+  </span>
+    
+
+   <div class="hidden debugNodes">{{debugNodes this}}</div>
+ </div>
+</template>
+
+
+<template name="openaiExample">
+  <div>
+   <!-- <a href="{{url}}" target="_blank">Link to the GitHub source code</a> -->
+
+   <div class="center" style="background-color: {{exampleColoring this}}; border-radius: 5px 5px 0 0; color:white">
+    <!-- <span class="center" style="">Example {{exampleID}}</span> -->
+    <span style="margin-right:4px;">Positive</span>
+    <input type="radio" label="{{label}}" name="{{dataset}}--{{_id}}--positive--{{clusterContext}}" {{checkedIfPositiveLabel this}} data-option="positive" value="positive" class="toggle-checked openAILabelRadio"/>
+    
+    <span style="margin-left:50%; margin-right:4px;">Negative</span>
+    <input type="radio" label="{{label}}" name="{{dataset}}--{{_id}}--negative--{{clusterContext}}" {{checkedIfNegativeLabel this}}  data-option="negative" value="negative" class="toggle-checked openAILabelRadio"/>
+  </div>
+   <span  class="example exampleID{{exampleID}}" data-additional="{{additionalNode}}"><pre class="example-highlighted-confused"><code>{{rawCode}}</code></pre>
+    <span class="match-explanation center" style="margin-left:24px; margin-right:24px"></span>
+  </span>
+    
+ </div>
+</template>
+
+
+<template name="exampleClusterByRole">
+  
+
+  {{{rolePrefix this}}}
+  <div class="row example-cluster example-cluster-{{role}}" id="example-cluster-{{role}}" data-cluster="{{role}}" style="margin-bottom:{{clusterMarginBottom role}}; height:auto;">
+    {{#each cluster}}
+      
+      {{> exampleCluster}}
+    {{/each}}
+
+  </div>
+
+  {{{roleSuffix this}}}
+
+
+</template>
+
+<template name="exampleCluster">
+  
+  <div class="row block-level hideRow-100" style="padding:0; margin-bottom: 0;">
+    
+    <div class="col-md-1 {{invisibleIfPseudo this}} {{showFeedback this}}" style="" >
+  
+
+      <input type="checkbox" name="{{dataset}}--{{node}}--{{node}}" data-edge="{{edgeInfo header}}" data-option="positive" value="{{node}}" class="toggle-checked subgraph-{{header}} subgraphClusterHintCheckbox"  {{checkedIfHasFeedback this}} style="width: 100%; ;">
+      <span data-toggle="modal" data-target="#counterFactualModal" data-whatif-subgraph-a="{{ whatifSubgraphA }}" data-whatif-subgraph-a-color="{{whatifSubgraphAColor}}" data-whatif-subgraph-b="{{whatifSubgraphB}}" data-whatif-subgraph-b-color="{{whatifSubgraphBColor}}" class="showWhatIf">{{{whatIf}}}</span>
+    </div>
+    <div class="col-md-1" data-toggle="collapse" data-target="#example-cluster-{{headerCount}}-{{role}}" 
+    aria-expanded="true" aria-controls="example-cluster-{{headerCount}}-{{role}}" style="text-align: center;">{{rowNumber}}</div>
+    <div class=" progress col-md-3 {{invisibleIfPseudo this }}" data-toggle="collapse" data-target="#example-cluster-{{headerCount}}-{{role}}" 
+    aria-expanded="true" aria-controls="example-cluster-{{headerCount}}-{{role}}"
+    style="margin-bottom: 0px; margin-top:2px; width:50px; padding-left:0; padding-right:0;" title="Out of {{matchingCount}} examples matching the pattern, {{unlabelledClusterWidthCount this}} examples match this component">
+      <div class="progress-bar progress-bar-warning" role="progressbar" style="background-color: rgba(0,100,225,0.6); width:{{unlabelledClusterWidth this }}%"></div>
+      <div class="progress-bar progress-bar-success" role="progressbar" style="background-color: rgba(0,100,225,0.2); width:0%"></div>
+    </div>
+    <div class="col-md-1" data-toggle="collapse" data-target="#example-cluster-{{headerCount}}-{{role}}" 
+    aria-expanded="true" aria-controls="example-cluster-{{headerCount}}-{{role}}"
+    title="A positive information gain indicates the positive examples can be separated from negative examples by this feature">{{roundOff informationGain}}</div>
+
+    <code class="col-md-5 underline_on_hover border_{{role}}" data-toggle="collapse" data-target="#example-cluster-{{headerCount}}-{{role}}" 
+    aria-expanded="true" aria-controls="example-cluster-{{headerCount}}-{{role}}"
+    style="
+    
+    background-color:hsla({{contextColor}}, 60%, 60%, 0.7); color: black; margin-bottom: 0; padding-left:{{clusterMarginLeft role}}; padding-top:0; padding-bottom:0; border-top:0;border-bottom:0; border-right:0;">
+    {{{codeFormPrefix role}}} {{{ displayHeader  header }}} {{codeFormSuffix role}}
+    </code>
+    <small class="col-md-2 " style="{{showIfHasFeedback this}}; text-decoration:underline;" data-toggle="collapse" data-target="#example-cluster-{{headerCount}}-{{role}}" >Show/Hide Impact Analysis</small>
+
+
+    <div class="row collapse show" id="example-cluster-{{headerCount}}-{{role}}">
+      <div class="col-md-6 match-additional" >
+
+        <h3 class="center">Matching</h3>
+        <div class="center" style="display: block; 
+            background-color: white;
+        border: 1px solid black;
+         color: black;
+           height:108px; margin-top: 8px; margin-bottom: 8px; padding-left: 4px; padding-right: 4px;">
+          <div style="margin: auto; text-align: center;">Including {{{ displayHeader  header }}} </div>
+          <div style="margin: auto; text-align: center;"><strong style="color: purple">would match</strong> {{positiveExampleCount}} examples</div>
+          <!-- <div style="margin: auto; text-align: center;">({{labelledPositiveAndMatchingCount}} <span style="background-color: rgba(0,180,0, 0.6); color:white;">positive</span>  + {{unlabelledAndMatchingCount}} <span style="background-color: rgba(0,100,225, 0.6); color: white;">unlabelled</span> + {{labelledNegativeAndMatchingCount}} <span style="background-color: rgba(180,0,0, 0.6); color:white;">negative</span>)</div> -->
+
+          
+          <div class="row" style="padding-top:8px">
+            <div class="col-md-1"></div>
+            <div class="col-md-3">( {{labelledPositiveAndMatchingCount}} <span style="background-color: rgba(0,180,0, 0.6); color:white;">positive</span></div>
+            <div class="col-md-1">+</div>
+            <div class="col-md-3">{{unlabelledAndMatchingCount}} <span style="background-color: rgba(0,100,225, 0.6); color: white;">unlabelled</span> </div>
+
+            <div class="col-md-1">+</div>
+            <div class="col-md-3">{{labelledNegativeAndMatchingCount}} <span style="background-color: rgba(180,0,0, 0.6); color:white;">negative</span> )</div>
+               
+          </div>
+          </div>
+
+        <div class="positive-examples-{{headerCount}}" style="padding-left:3px; padding-right:1px; ">
+        {{#each positiveExamples}}
+        
+          {{> example}}
+        {{/each}}
+        </div>
+        <!-- Only up to 3 examples are displayed. -->
+      </div>
+      <div class="col-md-6 removed-additional" >
+        <h3 class="center">Not Matching</h3>
+        <div class="center" style="display: block; 
+        background-color: white;
+        border: 1px solid black;
+         color: black;
+         height:108px; margin-top: 8px; margin-bottom: 8px; padding-left: 4px; padding-right: 4px;">
+          <div style="margin: auto; text-align: center;">Including  {{{ displayHeader  header }}} </div>
+          <div style="margin: auto; text-align: center;"><strong style="color: orange">does not match</strong> {{negativeExampleCount}} examples</div>
+          <!-- <div style="margin: auto; text-align: center;">
+             ({{labelledPositiveAndNotMatchingCount}} <span style="background-color: rgba(0,180,0, 0.6); color:white;">positive</span> + {{unlabelledAndNotMatchingCount}} <span style="background-color: rgba(0,100,225, 0.6); color: white;">unlabelled</span> + {{labelledNegativeAndNotMatchingCount}} <span style="background-color: rgba(180,0,0, 0.6); color:white;">negative</span> )</div>
+          </div> -->
+
+          <div class="row" style="padding-top:8px">
+            <div class="col-md-1"></div>
+            <div class="col-md-3">( {{labelledPositiveAndNotMatchingCount}} <span style="background-color: rgba(0,180,0, 0.6); color:white;">positive</span></div>
+            <div class="col-md-1">+</div>
+            <div class="col-md-3">{{unlabelledAndNotMatchingCount}} <span style="background-color: rgba(0,100,225, 0.6); color: white;">unlabelled</span> </div>
+
+            <div class="col-md-1">+</div>
+            <div class="col-md-3">{{labelledNegativeAndNotMatchingCount}} <span style="background-color: rgba(180,0,0, 0.6); color:white;">negative</span> )</div>
+               
+          </div>
+                </div>
+          <div class="negative-examples-{{headerCount}}" style="padding-left:1px; padding-right:3px;">
+          {{#each negativeExamples}}
+          
+            {{> example}}
+          {{/each}}
+        </div>
+        <!-- Only up to 3 examples are displayed. -->
+      </div>
+    </div>
+    
+  </div>
+</template>
+
+
+
+<template name="discriminativeFeatureByRole">
+  {{{discriminativeRolePrefix this}}}
+  <div class="example-cluster example-cluster-{{role}}" id="example-cluster-{{role}}" data-cluster="{{role}}" style="height:auto; ">
+    {{#if cluster}}
+      {{#each cluster}}
+        
+        {{> discriminativeFeature}}
+      {{/each}}
+    {{else}}
+    <div class="row block-level hideRow-100" style="padding-left:0; margin-left:0; margin-bottom: 0;">
+    <code class="border_{{role}}" data-toggle="collapse" data-target="#example-cluster-{{headerCount}}-{{role}}" 
+    aria-expanded="true" aria-controls="example-cluster-{{headerCount}}-{{role}}"
+    style="
+    
+    background-color:hsla({{contextColor}}, 60%, 60%, 0.7); 
+    color: black;
+    margin-bottom: 0; padding-left:{{clusterMarginLeft role}}; padding-top:0; padding-bottom:0; border-top:0; border-bottom:0; border-right:0">
+    <span class="hljs-comment">{{displayRole role}}</span>&nbsp;
+    </code>
+    <!-- background-color: #1E1E1E;;  color: #D4D4D4;  -->
+    </div>
+    
+    {{/if}}
+  </div>
+</template>
+
+<template name="discriminativeFeature">
+  <div class="row block-level hideRow-100" style="padding-left:0; margin-left:0; margin-bottom: 0;">
+
+    <code class="border_{{role}}" data-toggle="collapse" data-target="#example-cluster-{{headerCount}}-{{role}}" 
+    aria-expanded="true" aria-controls="example-cluster-{{headerCount}}-{{role}}"
+    style="
+    
+    background-color:hsla({{contextColor}}, 60%, 60%, 0.7); 
+    color: black;
+     margin-bottom: 0; padding-left:{{clusterMarginLeft role}}; padding-top:0; padding-bottom:0; border-top:0; border-bottom:0; border-right:0">
+    {{{codeFormPrefix role}}} {{{ displayHeader  header }}} {{codeFormSuffix role}}
+    <!-- <span class="discriminative-delete {{hideCancelButton this}}" data-node="{{thisNode node }}" data-other-node="{{otherNode this}}" data-toggle="tooltip" data-placement="top" title="Delete feature in pattern" style="width:4px; margin-right: 50px; padding-right:20px; margin-left:20px;"></span> -->
+    </code>
+    <!-- background-color: #1E1E1E;;  color: #D4D4D4; -->
+    
+  </div>
+</template>
+
+
+<template name="previewExample">
+
+   
+    <div class="center row">Example ID = {{exampleID}}</div>
+   <!-- <div id="preview-exampleID{{exampleID}}"><pre class="{{baggedExampleHighlight this}}"><code>{{rawCode}}</code></pre></div> -->
+   
+
+</template>
+
+<!-- <template name="subgraph">
+  <div>
+    <input type="checkbox" label="{{subgraphId}}" name="{{dataset}}--{{subgraphId}}" data-option="positive" value="{{this.text}}" class="toggle-checked subgraphCheckbox"/>
+    <span>{{this.edges}}</span>
+  
+ </div>
+ <div>
+  ------
+ </div>
+</template> -->
+
+<template name="node">
+ 
+  <div class="col-md-12">
+    <!-- <div class="col-md-1"> -->
+      
+    <!-- </div> -->
+    <div style="padding-left: 0px; display: flex; ">
+      <!-- {{#each subgraphId in this.subgraphIds}} -->
+      
+        
+          {{#each subgraphId in allDiscriminativeSubgraphs}}
+          
+            <!-- <div style="width:8%" > -->
+              
+            
+              <!-- <div style="align-items:center; display:flex;"> -->
+                
+              <!-- </div> -->
+              <!-- Keep these around for copying the css colors -->
+              <span class="hide subgraph-{{subgraphId}}-node-correct" style="display:none"></span>
+              <span class="hide subgraph-{{subgraphId}}-node-misuse" style="display:none"></span>
+              <span class="hide subgraph-{{subgraphId}}-node" style="display:none"></span>
+            <!-- </div> -->
+            
+          
+          {{/each}}     
+        </div>   
+          <div class="" style="padding-left:30px">
+            <div class="progress {{invisibleIfPseudo this }}" style="margin-bottom: 0px; margin-top:2px; min-width: 30%; max-width: 90%;" title="Out of {{positiveCount}} positive examples, {{labelledPositiveWidthCount this}} examples match">
+              <div class="progress-bar progress-bar-warning" role="progressbar" style="background-color: rgba(0,100,225,0.8); width:{{labelledPositiveWidth this }}%"></div>
+              <div class="progress-bar progress-bar-success" role="progressbar" style="background-color: rgba(0,100,225,0.2); width:{{remainingLabelledPositiveWidth this }}%"></div>
+            </div>
+            <div class="progress {{invisibleIfPseudo this }}" style="margin-bottom: 0px; margin-top:2px; min-width: 30%; max-width: 90%;" title="Out of {{negativeCount}} negative examples, {{labelledNegativeWidthCount this}} examples match">
+              <div class="progress-bar progress-bar-warning" role="progressbar" style="background-color: rgba(154, 5, 30, 0.8); width:{{labelledNegativeWidth this }}%"></div>
+              <div class="progress-bar progress-bar-success" role="progressbar" style="background-color: rgba(30, 0, 19, 0.2);  width:{{remainingLabelledNegativeWidth this }}%"></div>
+            </div>
+          </div>
+          <div class="row {{blurIfPreview this}} center">
+            <input type="checkbox" label="{{subgraphId}}" name="{{dataset}}--{{this.text}}--{{subgraphId}}" data-subgraph-id={{subgraphId}} data-subgraphs="{{csv this this.subgraphIds}}" data-option="positive" value="{{this.text}}"   {{isSubgraphChecked this}} class=" toggle-checked subgraph-{{subgraphId}} {{invisibleIfPseudo this}}  subgraphCheckbox" style="width: 15px; margin-left: 20px; margin-right:2px; display:relative;"/>
+
+            <span data-subgraphs="{{csv this this.subgraphIds}}" class="subgraph-node-selection  subgraph-0-node-{{correctOrMisuseClass this.subgraphIds}}  -{{joinDash this.subgraphIds}} {{boundedBoxIfFocalAPI this }}" style="flex: 1; margin-left:8px; color:white; {{backgroundColorIfPseudo this}}">{{{displayNode this.text}}}</span>   
+            <!-- background-color:hsla({{contextColor}}, 60%, 60%, 0.9) -->
+            <span class="discriminative-cancel {{hideCancelButton this}}" data-subgraph-id="{{this.subgraphIds}}" style="width:4px; margin-right: 50px; padding-right:20px; margin-left:20px;"></span>
+          </div>
+
+          <div class="" id="" style="padding-left:12px;">
+
+            <div class="collapse show in" id="collapse-{{this.subgraphIds}}">
+                {{#each this.children}}
+                <div class="row block-level " style="padding-top:1em; padding-left:8em;">
+                  <!-- <div class="col-md-1"></div> -->
+                  {{> node}}
+      
+                </div>
+              {{/each}}  
+              </div>
+          </div>
+
+    
+    {{nodeRendered this.subgraphIds}}
+  </div> 
+</template>
+
+<template name="frequentNode">
+  
+  <div class="col-md-11 checkbox-container">
+    <div style="padding-left: 0px; display: flex;">
+      
+      <div class="col-md-2 {{invisibleIfPseudo this}} hidden" style=" " >
+        <select name="{{dataset}}--{{this.text}}--{{this.subgraphIds}}" data-subgraph-id={{this.subgraphIds}} data-subgraphs="{{csv this this.subgraphIds}}" data-option="positive" data-parents="{{printParent this}}" value="{{this.text}}" class="toggle-checked subgraph-{{subgraphId}} frequentSubgraphCheckbox" style="width: 60%; height: 24px;">
+          <!-- <option value=""></option>
+          <option value="pattern">Include in Pattern</option>
+          <option value="antipattern">Exclude in Pattern</option> -->
+        </select> 
+
+        
+      </div>
+      <span class="hide subgraph-{{this.subgraphIds}}-node" style="display:none"></span>
+
+      <div class="" style="">
+        <div class="progress col-md-3 {{invisibleIfPseudo this }}" style="margin-bottom: 0px; margin-top:2px; width:50px" title="Out of {{count}} examples, {{unlabelledWidthCount this}} examples have ">
+          <div class="progress-bar progress-bar-warning" role="progressbar" style="background-color: rgba(0,100,225,0.6); width:{{unlabelledWidth this }}%"></div>
+          <div class="progress-bar progress-bar-success" role="progressbar" style="background-color: rgba(0,100,225,0.2); width:{{remainingUnlabelledWidth this }}%"></div>
+        </div>
+        <!-- <div class="progress" style="margin-bottom: 0px; margin-top:2px; width:64px;" title="Out of 100 examples, 0 examples have ">
+          <div class="progress-bar progress-bar-warning" role="progressbar" style="background-color: rgba(0,100,225,0.8); width:{{labelledPositiveWidth this }}%"></div>
+          <div class="progress-bar progress-bar-success" role="progressbar" style="background-color: rgba(0,100,225,0.2); width:{{remainingLabelledPositiveWidth this }}%"></div>
+        </div>
+        <div class="progress" style="margin-bottom: 0px; margin-top:2px; width:64px;" title="Out of 100 examples, 0 examples have ">
+          <div class="progress-bar progress-bar-warning" role="progressbar" style="background-color: rgba(154, 5, 30, 0.8); width:{{labelledNegativeWidth this }}%"></div>
+          <div class="progress-bar progress-bar-success" role="progressbar" style="background-color: rgba(30, 0, 19, 0.2);  width:{{remainingLabelledNegativeWidth this }}%"></div>
+        </div> -->
+
+        <span data-subgraphs="{{csv this this.subgraphIds}}" class="row frequent-node subgraph-node-selection- color-{{this.context}} {{boundedBoxIfPseudo this }}" data-node-text="{{this.text}}" data-target="#collapse-{{this.subgraphIds}}" style="flex: 1; padding-left:8px; padding-right:8px; background-color:hsla({{contextColor}}, 60%, 60%, 0.7)">{{{displayNode this.text}}}</span>
+
+        <!-- <div class="collapse  {{showIfFocalNode this}}" id="collapse-{{this.subgraphIds}}"> -->
+        <div class="collapse  show in " id="collapse-{{this.subgraphIds}}">
+          <!-- <div class="spinner {{hideIfHaveNonEmptyChildren this}}"> -->
+            <!-- Loading... -->
+          <!-- </div> -->
+          {{#each this.children}}
+          <div class="row block-level " style="padding-top:1em">
+            <!-- <div class="col-md-1"></div> -->
+            {{> frequentNode}}
+
+          </div>
+        {{/each}}  
+        </div>
+
+      </div>
+    </div>
+    {{nodeRendered this.subgraphIds}}
+  </div> 
+</template>
+
+<template name="breadcrumb">
+  <!-- <span class="label label-default">{{shortName key}}<span class="badge removeFilter">x</span></span>  -->
+  <span class="{{key}}">{{shortName key}},</span>
+</template>

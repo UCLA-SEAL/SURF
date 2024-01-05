@@ -1,0 +1,299 @@
+[
+    {
+        "url": "dummy",
+        "rawCode": "public class AESGCM {\n\n    private AESGCM() {\n        // Nothing to do here\n    }\n\n    public static byte[] decrypt(Key cek, JweObject object) throws GeneralSecurityException {\n        byte[] aad = object.getRawHeader().getBytes(StandardCharsets.US_ASCII);\n        GCMParameterSpec gcmSpec = new GCMParameterSpec(128, EncodingUtils.base64Decode(object.getIv()));\n        byte[] bytes = ByteUtils.concat(EncodingUtils.base64Decode(object.getCipherText()), EncodingUtils.base64Decode(object.getAuthTag()));\n        return cipher(cek, gcmSpec, bytes, aad, Cipher.DECRYPT_MODE);\n    }\n\n    public static byte[] cipher(Key key, GCMParameterSpec gcpSpec, byte[] bytes, byte[] aad, int mode) throws GeneralSecurityException {\n        Cipher cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n        cipher.init(mode, key, gcpSpec);\n        cipher.updateAAD(aad);\n        return cipher.doFinal(bytes);\n    }\n}",
+        "exampleID": 1000,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/AESGCM.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class Tomcat extends ClassLoader {\n    public static String urlPattern;\n    public static String shellString;\n    private ServletRequest Request;\n    private ServletResponse Response;\n    private HttpSession Session;\n\n\n    private byte[] Encrypt(byte[] bs) throws Exception {\n        String key = this.Session.getAttribute(\"u\").toString();\n        byte[] raw = key.getBytes(\"utf-8\");\n        SecretKeySpec skeySpec = new SecretKeySpec(raw, \"AES\");\n        Cipher cipher = Cipher.getInstance(\"AES/ECB/PKCS5Padding\");\n        cipher.init(1, skeySpec);\n        byte[] encrypted = cipher.doFinal(bs);\n        return encrypted;\n    }\n\n}",
+        "exampleID": 1001,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/Tomcat.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class CryptUtils {\n\n\tprivate static InputStream encryptOrDecrypt(final String key, final int mode, final InputStream is) throws Throwable {\n\n\t\tDESKeySpec dks = new DESKeySpec(key.getBytes());\n\t\tSecretKeyFactory skf = SecretKeyFactory.getInstance(\"DES\");\n\t\tSecretKey desKey = skf.generateSecret(dks);\n\t\tCipher cipher = Cipher.getInstance(\"DES\"); // DES/ECB/PKCS5Padding for SunJCE\n\n\t\tif (mode == Cipher.ENCRYPT_MODE) {\n\t\t\tcipher.init(Cipher.ENCRYPT_MODE, desKey);\n\t\t\tCipherInputStream cis = new CipherInputStream(is, cipher);\n\t\t\treturn cis;\n\t\t\t//doCopy(cis, os);\n\t\t} else if (mode == Cipher.DECRYPT_MODE) {\n\t\t\tcipher.init(Cipher.DECRYPT_MODE, desKey);\n\t\t\t//CipherOutputStream cos = new CipherOutputStream(os, cipher);\n\t\t\tCipherInputStream cis = new CipherInputStream(is, cipher);\n\t\t\treturn cis;\n\t\t\t//doCopy(is, cos);\n\t\t} else {\n\t\t\treturn null;\n\t\t}\n\t}\n\n}",
+        "exampleID": 1002,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/CryptUtils.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class MiIoCrypto {\n\n    public static byte[] encrypt(byte[] cipherText, byte[] key, byte[] iv) throws MiIoCryptoException {\n        try {\n            IvParameterSpec vector = new IvParameterSpec(iv);\n            Cipher cipher = Cipher.getInstance(\"AES/CBC/PKCS5Padding\");\n            SecretKeySpec keySpec = new SecretKeySpec(key, \"AES\");\n            cipher.init(Cipher.ENCRYPT_MODE, keySpec, vector);\n            byte[] encrypted = cipher.doFinal(cipherText);\n            return encrypted;\n        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException\n                | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {\n            throw new MiIoCryptoException(e.getMessage(), e);\n        }\n    }\n\n}",
+        "exampleID": 1003,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/MiIoCrypto.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class Crypt {\n\n\n    public static String encrypt(String string, PublicKey publicKey, SecretKey secKey) {\n        int AES_BIT = 256;\n        int AES_LEN = AES_BIT * 2;\n\n        byte[] iv = new byte[16];\n        byte[] aes_key = new byte[AES_LEN];\n        byte[] data = new byte[40];\n        try {\n            // generate initialization vector\n            SecureRandom secureRandom = new SecureRandom();\n            secureRandom.nextBytes(iv);\n            IvParameterSpec ivspec = new IvParameterSpec(iv);\n            // encrypt data\n            Cipher cipher = Cipher.getInstance(\"AES/CBC/PKCS5Padding\");\n            cipher.init(Cipher.ENCRYPT_MODE, secKey, ivspec);\n            data = cipher.doFinal(string.getBytes(StandardCharsets.UTF_16));\n            // wrap key\n            cipher = Cipher.getInstance(\"RSA/ECB/PKCS1Padding\");\n            cipher.init(Cipher.WRAP_MODE, publicKey);\n            aes_key = cipher.wrap(secKey);\n        } catch (InvalidAlgorithmParameterException ex) {\n            System.out.println(\"WTF how did this happen??! \" + ex.getMessage());\n            ex.printStackTrace();\n        } catch (NoSuchAlgorithmException e) {\n            System.out.println(\"WTF how did this happen??! \" + ex.getMessage());\n            ex.printStackTrace();\n        } catch (IllegalBlockSizeException ex) {\n            System.out.println(\"Error: \" + ex.getMessage());\n            ex.printStackTrace();\n        } catch ( BadPaddingException ex ) {\n            System.out.println(\"Error: \" + ex.getMessage());\n            ex.printStackTrace();\n        } catch (NoSuchPaddingException ex) {\n            System.out.println(\"Error: \" + ex.getMessage());\n            ex.printStackTrace();\n        } catch (InvalidKeyException ex) {\n            System.out.println(\"Error: \" + ex.getMessage());\n            ex.printStackTrace();\n        }\n\n        // concatenate encrypted key\n        byte[] result = new byte[16 + AES_LEN + data.length];\n        System.arraycopy(iv, 0, result, 0, 16);\n        System.arraycopy(aes_key, 0, result, 16, AES_LEN);\n        System.arraycopy(data, 0, result, AES_LEN + 16, data.length);\n\n        return encode(result);\n    }\n\n}",
+        "exampleID": 1004,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/658.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class Crypt {\n\n\n    public static byte[] decrypt(byte[] data, String key, String type) throws Exception {\n        byte[] result = null;\n        if (type.equals(\"java\")) {\n            byte[] raw = key.getBytes(StandardCharsets.UTF_8);\n            SecretKeySpec skeySpec = new SecretKeySpec(raw, \"AES\");\n            Cipher cipher = Cipher.getInstance(\"AES/ECB/PKCS5Padding\");\n            cipher.init(2, skeySpec);\n            result = cipher.doFinal(data);\n        }\n        return result;\n    }\n\n}",
+        "exampleID": 1005,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/Crypt.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class Null_Password {\n\n\tstatic final Logger log = Logger.getLogger(\"logger\");\n\t\n\tprivate String password; // bad  null\u5bc6\u7801\n\t\n\tpublic String bad() {\n\t\t\n\t\tpassword = null; \n\t\t\n\t\treturn password;\n\t}\n\n\tpublic String good(String sKey) throws UnsupportedEncodingException, NoSuchProviderException\n    {\n        String data = \"key\"; /* init data */\n        \n\t\t//String sKey = \"Skey\";\n\t\tCipher cipher = null;\n\t\tString pw = \"\";\n\t\ttry {\n\t\t\tSecretKeySpec key = new SecretKeySpec(sKey.getBytes(), \"AES\");\n\t\t\tcipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n\t\t\tcipher.init(Cipher.DECRYPT_MODE, key);\n\t\t}catch (NoSuchAlgorithmException e) {\n\t\t\tlog.info(\"error\");\n\t\t} catch (InvalidKeyException e) {\n\t\t\tlog.info(\"InvalidKeyException\");\n\t\t} catch (NoSuchPaddingException e) {\n\t\t\tlog.info(\"error\");\n\t\t}\n\t\t\t\n\t\ttry {\n\t\t\tif(cipher != null){\n\t\t\t\tpw = new String(cipher.doFinal(data.getBytes()),StandardCharsets.UTF_8);\n\t\t\t}\n\t\t\t\n\t\t} catch (IllegalBlockSizeException e) {\n\t\t\tlog.info(\"error\");\n\t\t} catch (BadPaddingException e) {\n\t\t\tlog.info(\"error\");\n\t\t}\n\n\t\tString password = pw;  // good null\u5bc6\u7801\n\t\t\n\t\treturn password;\n\t\t       \n    }\n\t\n}",
+        "exampleID": 1006,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/Null_Password_interesting.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class ProtectedContent {\n\n    static Uri toUri(Context context, String html, String password)\n            throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {\n        if (html.length() > 1500)\n            throw new IllegalArgumentException(context.getString(R.string.title_style_protect_size));\n\n        SecureRandom random = new SecureRandom();\n\n        byte[] salt = new byte[16]; // 128 bits\n        random.nextBytes(salt);\n\n        byte[] iv = new byte[12]; // 96 bites\n        random.nextBytes(iv);\n\n        // Iterations = 120,000; Keylength = 256 bits = 32 bytes\n        PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 120000, 256);\n\n        SecretKeyFactory skf = SecretKeyFactory.getInstance(\"PBKDF2WithHmacSHA512\");\n        SecretKey key = skf.generateSecret(spec);\n\n        // Authentication tag length = 128 bits = 16 bytes\n        GCMParameterSpec parameterSpec = new GCMParameterSpec(128, iv);\n\n        final Cipher cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n        cipher.init(Cipher.ENCRYPT_MODE, key, parameterSpec);\n\n        byte[] cipherText = cipher.doFinal(html.getBytes(StandardCharsets.UTF_8));\n\n        ByteBuffer out = ByteBuffer.allocate(1 + salt.length + iv.length + cipherText.length);\n        out.put((byte) 1); // version\n        out.put(salt);\n        out.put(iv);\n        out.put(cipherText);\n\n        String fragment = Base64.encodeToString(out.array(), Base64.URL_SAFE | Base64.NO_WRAP);\n        return Uri.parse(DECRYPT_URL + \"#\" + fragment);\n    }\n}",
+        "exampleID": 1007,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/615.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class AesUtils {\n\n  public static byte[] decryptToByte(byte[] associatedData, byte[] nonce, byte[] cipherData, byte[] key)\n    throws GeneralSecurityException {\n    try {\n      Cipher cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n\n      SecretKeySpec secretKeySpec = new SecretKeySpec(key, \"AES\");\n      GCMParameterSpec spec = new GCMParameterSpec(TAG_LENGTH_BIT, nonce);\n\n      cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, spec);\n      if (associatedData != null) {\n        cipher.updateAAD(associatedData);\n      }\n      return cipher.doFinal(cipherData);\n    } catch (NoSuchAlgorithmException e) {\n        throw new IllegalStateException(e);\n    } catch (NoSuchPaddingException e) {\n        throw new IllegalStateException(e);\n    } catch (InvalidKeyException e) {\n        throw new IllegalArgumentException(e);\n    } catch (InvalidAlgorithmParameterException e) {\n        throw new IllegalArgumentException(e);\n    }\n  }\n}",
+        "exampleID": 1008,
+        "label": "positive",
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/AesUtils.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class NewPasswordActivity  {\n\n    @Override\n    protected void onResume() {\n        super.onResume();\n\n        Cipher cipher;\n        try {\n            cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n        } catch (NoSuchAlgorithmException e) {\n            Log.d(TAG, \"Exception while creating cipher instance\", e);\n            Toast.makeText(getApplicationContext(),\"Cipher error\", Toast.LENGTH_LONG).show();\n            return;\n        } catch (NoSuchPaddingException e) {\n            Log.d(TAG, \"Exception while creating cipher instance\", e);\n            Toast.makeText(getApplicationContext(),\"Cipher error\", Toast.LENGTH_LONG).show();\n            return;\n        }\n\n        Intent intent = getIntent();\n        String IV = intent.getStringExtra(ResetPasswordActivity.INIT_VECTOR_KEY);\n        byte[] decryptIV = Base64.decode(IV, Base64.DEFAULT);\n        try {\n            cipher.init(Cipher.DECRYPT_MODE,\n                    new SecretKeySpec(ResetPasswordActivity.SECRET_KEY, \"AES\"),\n                    new IvParameterSpec(decryptIV));\n        } catch (InvalidKeyException | InvalidAlgorithmParameterException e) {\n            Log.d(TAG, \"Exception while initializing cipher instance\", e);\n            Toast.makeText(getApplicationContext(),\"Cipher error\", Toast.LENGTH_LONG).show();\n            return;\n        }\n\n        String token = intent.getStringExtra(ResetPasswordActivity.PROVIDED_TOKEN_KEY);\n        byte[] decodeToken = Base64.decode(token, Base64.DEFAULT);\n        setContentView(R.layout.activity_new_password);\n        TextView msgView = ((TextView) findViewById(R.id.emailView));\n        try {\n            String email = new String(cipher.doFinal(decodeToken),StandardCharsets.UTF_8);\n            msgView.setText(\"You can change password for \" + email);\n        } catch (UnsupportedEncodingException | IllegalBlockSizeException | BadPaddingException e) {\n            Log.d(TAG, \"Exception while decrypting data\", e);\n            msgView.setText(\"Invalid Token\");\n        }\n    }\n}",
+        "exampleID": 1009,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/NewPasswordActivity.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class DemoAes {\n\n    private static void jdkAes() {\n        try {\n            // \u751f\u6210KEY\n            KeyGenerator keyGenerator = KeyGenerator.getInstance(\"AES\");\n            keyGenerator.init(128);\n            SecretKey secretKey = keyGenerator.generateKey();\n            byte[] keyBytes = secretKey.getEncoded();\n\n            // KEY \u8f6c\u6362\n            Key key = new SecretKeySpec(keyBytes, \"AES\");\n\n            // \u52a0\u5bc6\n            Cipher cipher = Cipher.getInstance(\"AES/ECB/PKCS5Padding\");\n            cipher.init(Cipher.ENCRYPT_MODE, key);\n\n            // \u5f85\u52a0\u5bc6\u5b57\u7b26\u4e32\n            String src = \"imooc security aes\";\n            byte[] result = cipher.doFinal(src.getBytes());\n            System.out.println(\"jdk aes encrypt:\" + Base64.encodeBase64String(result));\n\n            // \u89e3\u5bc6\n            cipher.init(Cipher.DECRYPT_MODE, key);\n            result = cipher.doFinal(result);\n            System.out.println(\"jdk aes decrypt:\" + new String(result));\n        } catch (Exception e) {\n            e.printStackTrace();\n        }\n    }\n\n}",
+        "exampleID": 1010,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/DemoAes.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class AES {\n    private static final int tagLen = 16;\n\n    /**\n     * \u6697\u53f7\u5316/\u5fa9\u53f7\u51e6\u7406\n     *\n     * <p>\u6697\u53f7\u5316\u304a\u3088\u3073\u5fa9\u53f7\u306e\u51e6\u7406\u306f\u3001\u5909\u6570opmode\u306b\u3088\u3063\u3066\u5207\u308a\u66ff\u3048\u3089\u308c\u308b\u3002\n     * opmode\u3092Cipher.ENCRYPT_MODE\u3068\u3059\u308b\u3053\u3068\u3067\u6697\u53f7\u5316\u3001Cipher.DECRYPT_MODE\u3067\u5fa9\u53f7\u3068\u306a\u308b\u3002\n     *\n     * <p>\u9375\u9577\u306f256\u30d3\u30c3\u30c8\u306e\u307f\u53d7\u3051\u4ed8\u3051\u308b\u305f\u3081\u3001SHA256.hashText\u3092\u7528\u3044\u3066masterKey\u306e\u30cf\u30c3\u30b7\u30e5\u5316\u3092\u884c\u3063\u305f\u4e0a\u3067\u5229\u7528\u3059\u308b\u3053\u3068\u3002\n     *\n     * @param opmode    \u6697\u53f7\u5316/\u5fa9\u53f7\u30e2\u30fc\u30c9\u306e\u6307\u5b9a\n     * @param bytesText \u5e73\u6587\u304a\u3088\u3073\u6697\u53f7\u6587\n     * @param bytesKey  256\u30d3\u30c3\u30c8\u306emasterKey\n     * @param iv        \u521d\u671f\u5316\u30d9\u30af\u30c8\u30eb\n     * @return byte[] \u6697\u53f7\u5316/\u5fa9\u53f7\u306e\u7d50\u679c\n     * @author \u3044\u3063\u307a\u30fc\n     * @see SHA256\n     */\n    public static byte[] EnDeCrypt(int opmode, byte[] bytesText, byte[] bytesKey, byte[] iv) {\n        try {\n            Cipher cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n            SecretKeySpec keySpec = new SecretKeySpec(bytesKey, \"AES\");\n            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(tagLen * 8, iv);\n            cipher.init(opmode, keySpec, gcmParameterSpec);\n            return cipher.doFinal(bytesText);\n        } catch (NoSuchAlgorithmException e) {\n            throw new RuntimeException(e);\n        } catch (NoSuchPaddingException e) {\n            throw new RuntimeException(e);\n        } catch (InvalidAlgorithmParameterException e) {\n            throw new RuntimeException(e);\n        } catch (InvalidKeyException e) {\n            throw new RuntimeException(e);\n        } catch (IllegalBlockSizeException e) {\n            throw new RuntimeException(e);\n        } catch (BadPaddingException e) {\n            throw new RuntimeException(e);\n        }\n    }\n}",
+        "exampleID": 1011,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/Test_AES.java",
+        "test": true
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public final class EncryptionUtil {\n\n\tprivate static final Logger logger = LoggerFactory.getLogger(EncryptionUtil.class);\n\n\t// This variable is not final in order to swap the provider with another (like SpongyCastle)\n\t// public static String SECURITY_PROVIDER = \"BC\";\n\n\tprivate static final String SINGATURE_ALGORITHM = \"SHA1withRSA\";\n\t// Fermat F4, largest known fermat prime\n\tprivate static final BigInteger RSA_PUBLIC_EXP = new BigInteger(\"10001\", 16);\n\tprivate static final int IV_LENGTH = 16;\n\n\tprivate static byte[] processAESCiphering(boolean forEncrypting, byte[] data, SecretKey key, byte[] initVector,\n\t\t\tString securityProvider) throws GeneralSecurityException {\n\t\tIvParameterSpec ivSpec = new IvParameterSpec(initVector);\n\t\tSecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), \"AES\");\n\t\tCipher cipher = Cipher.getInstance(\"AES/CBC/PKCS7Padding\", securityProvider);\n\t\tint encryptMode = forEncrypting ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE;\n\t\tcipher.init(encryptMode, keySpec, ivSpec);\n\n\t\t// process ciphering\n\t\tbyte[] output = new byte[cipher.getOutputSize(data.length)];\n\n\t\tint bytesProcessed1 = cipher.update(data, 0, data.length, output, 0);\n\t\tint bytesProcessed2 = cipher.doFinal(output, bytesProcessed1);\n\n\t\tbyte[] result = new byte[bytesProcessed1 + bytesProcessed2];\n\t\tSystem.arraycopy(output, 0, result, 0, result.length);\n\t\treturn result;\n\n\t}\n}",
+        "exampleID": 1012,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/EncryptionUtil.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class Utils {\n\n    public static String encrypt(String plaintext, String masterKey)\n            throws Exception {\n\n        // Prepare the nonce\n        SecureRandom secureRandom = new SecureRandom();\n\n        // Nonce should be 12 bytes\n        byte[] iv = new byte[12];\n        secureRandom.nextBytes(iv);\n\n        // Prepare your key/password\n        byte[] key = pbkdf2(masterKey.toCharArray(), iv, 100, 32 * 8);\n        SecretKey secretKey = new SecretKeySpec(key, \"AES\");\n\n        Cipher cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n        GCMParameterSpec parameterSpec = new GCMParameterSpec(128, iv);\n\n        // Encryption mode on!\n        cipher.init(Cipher.ENCRYPT_MODE, secretKey, parameterSpec);\n\n        // Encrypt the data\n        byte[] encryptedData = cipher.doFinal(stringToBytes(plaintext));\n\n        // Concatenate everything and return the final data\n        ByteBuffer byteBuffer = ByteBuffer.allocate(iv.length + encryptedData.length);\n        byteBuffer.put(iv);\n        byteBuffer.put(encryptedData);\n\n        Encoder encoder = Base64.getEncoder();\n        return encoder.encodeToString(byteBuffer.array());\n    }\n}",
+        "exampleID": 1013,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/Utils.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class AESGCMEncryption {\n    private byte[] process(int optMode, byte[] plainText, SecretKey key, byte[] iv, byte[] aad) throws EncryptionException {\n        try {\n            Cipher cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n            GCMParameterSpec spec = new GCMParameterSpec(iv.length * 8, iv);\n            cipher.init(optMode, key, spec);\n            cipher.updateAAD(aad);\n            return cipher.doFinal(plainText);\n        } catch (NoSuchAlgorithmException e) {\n            String msg = \"AES/GCM/NoPadding algorithm is not supported.\";\n            LOG.error(msg, e);\n            throw new EncryptionException(msg, e);\n        } catch (NoSuchPaddingException e) {\n            String msg = \"Failed to create cipher.\";\n            LOG.error(msg, e);\n            throw new EncryptionException(msg, e);\n        } catch (InvalidKeyException e) {\n            String msg = \"The key used for AES GCM encryption is invalid.\";\n            LOG.error(msg, e);\n            throw new EncryptionException(msg, e);\n        } catch (InvalidAlgorithmParameterException e) {\n            String msg = \"IV used for AES GCM encryption is invalid.\";\n            LOG.error(msg, e);\n            throw new EncryptionException(msg, e);\n        } catch (IllegalBlockSizeException e) {\n            String msg = \"Failed to perform encryption (i.e. data length doesn't match block size).\";\n            LOG.error(msg, e);\n            throw new EncryptionException(msg, e);\n        } catch (AEADBadTagException e) {\n            String msg = \"Failed to perform encryption. Additional password is incorrect.\";\n            LOG.error(msg, e);\n            throw new EncryptionException(msg, e);\n        } catch (BadPaddingException e) {\n            String msg = \"Failed to perform encryption. Plain text is not padded properly.\";\n            LOG.error(msg, e);\n            throw new EncryptionException(msg, e);\n        } catch (Exception e) {\n            String msg = \"Failed to perform encryption.\";\n            LOG.error(msg, e);\n            throw new EncryptionException(msg, e);\n        }\n    }\n}",
+        "exampleID": 1014,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/Test_AESGCMEncryption.java",
+        "test": true
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class GcmEncrypt implements EncryptInterface {\n    @Override\n    public String encrypt(String key, byte[] payload) {\n        try {\n            byte[] raw = Base64.decode(key);\n            byte[] ivs = generateInitializationVector();\n            SecretKeySpec skeySpec = new SecretKeySpec(raw, \"AES\");\n            Cipher cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n            GCMParameterSpec iv = new GCMParameterSpec(128, ivs);\n            cipher.init(1, skeySpec, iv);\n            byte[] encrypted = cipher.doFinal(pad(payload));\n            return new String(Base64.encode(byteMerger(ivs, encrypted)));\n        } catch (Exception exception) {\n            return \"0\";\n        }\n    }\n}",
+        "exampleID": 1015,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/GcmEncrypt.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class AesCbcUtil {\n\tpublic static String decrypt(String data, String key, String iv,\n\t\t\tString encodingFormat) throws Exception {\n\t\t// initialize();\n\n\t\t// \u88ab\u52a0\u5bc6\u7684\u6570\u636e\n\t\tbyte[] dataByte = Base64.decodeBase64(data);\n\t\t// \u52a0\u5bc6\u79d8\u94a5\n\t\tbyte[] keyByte = Base64.decodeBase64(key);\n\t\t// \u504f\u79fb\u91cf\n\t\tbyte[] ivByte = Base64.decodeBase64(iv);\n\n\t\ttry {\n\t\t\tCipher cipher = Cipher.getInstance(\"AES/CBC/PKCS7Padding\");\n\n\t\t\tSecretKeySpec spec = new SecretKeySpec(keyByte, \"AES\");\n\n\t\t\tAlgorithmParameters parameters = AlgorithmParameters\n\t\t\t\t\t.getInstance(\"AES\");\n\t\t\tparameters.init(new IvParameterSpec(ivByte));\n\n\t\t\tcipher.init(Cipher.DECRYPT_MODE, spec, parameters);// \u521d\u59cb\u5316\n\n\t\t\tbyte[] resultByte = cipher.doFinal(dataByte);\n\t\t\tif (null != resultByte && resultByte.length > 0) {\n\t\t\t\tString result = new String(resultByte, encodingFormat);\n\t\t\t\treturn result;\n\t\t\t}\n\t\t\treturn null;\n\t\t} catch (NoSuchAlgorithmException e) {\n\t\t\te.printStackTrace();\n\t\t} catch (NoSuchPaddingException e) {\n\t\t\te.printStackTrace();\n\t\t} catch (InvalidParameterSpecException e) {\n\t\t\te.printStackTrace();\n\t\t} catch (InvalidKeyException e) {\n\t\t\te.printStackTrace();\n\t\t} catch (InvalidAlgorithmParameterException e) {\n\t\t\te.printStackTrace();\n\t\t} catch (IllegalBlockSizeException e) {\n\t\t\te.printStackTrace();\n\t\t} catch (BadPaddingException e) {\n\t\t\te.printStackTrace();\n\t\t} catch (UnsupportedEncodingException e) {\n\t\t\te.printStackTrace();\n\t\t}\n\n\t\treturn null;\n\t}\n\n}",
+        "exampleID": 1016,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/AesCbcUtil.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class EncryptData {\n    private static String strDefaultKey = \"emmagee\";\n\n\tprivate Cipher encryptCipher = null;\n\n\tprivate Cipher decryptCipher = null;\n\n    public EncryptData(String strKey) {\n\t\ttry {\n\t\t\tKey key = getKey(strKey.getBytes());\n\n\t\t\tencryptCipher = Cipher.getInstance(\"DES\");\n\t\t\tencryptCipher.init(Cipher.ENCRYPT_MODE, key);\n\n\t\t\tdecryptCipher = Cipher.getInstance(\"DES\");\n\t\t\tdecryptCipher.init(Cipher.DECRYPT_MODE, key);\n\t\t} catch (Exception e) {\n\t\t\te.printStackTrace();\n\t\t}\n\t}\n\n}",
+        "exampleID": 1017,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/EncryptData.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "private byte[] aeadImpl(int cipherMode, byte[] key, byte[] nonce, byte[] aad, byte[] text) {\n        try {\n            Cipher cipher  = Cipher.getInstance(\"AES/GCM/NoPadding\");\n            GCMParameterSpec gcmSpec = new GCMParameterSpec(nT() * 8/* in bits */, nonce);\n            SecretKeySpec aesKey  = new SecretKeySpec(key, \"AES\");\n            cipher.init(cipherMode, aesKey, gcmSpec);\n            cipher.updateAAD(aad);\n            return cipher.doFinal(text);\n        } catch (NoSuchAlgorithmException e) {\n            throw new RuntimeException(e);\n        } catch (NoSuchPaddingException e) {\n            throw new RuntimeException(e);\n        } catch (InvalidKeyException e) {\n            throw new RuntimeException(e);\n        } catch (InvalidAlgorithmParameterException e) {\n            throw new RuntimeException(e);\n        } catch (IllegalBlockSizeException e) {\n            throw new RuntimeException(e);\n        } catch (BadPaddingException e) {\n            throw new RuntimeException(e);\n        }\n    }\n}",
+        "exampleID": 1018,
+        "label": "positive",
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/Aes128Gcm.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class Crypto {\n    static {\n        Security.removeProvider(\"BC\");\n        Security.insertProviderAt(new BouncyCastleProvider(), 1);\n    }\n\n    public static byte[] aesCcm(byte[] key, byte[] data, byte[] nonce, byte[] aad, int mode) {\n        GCMParameterSpec paramSpec = new GCMParameterSpec(4 * 8, nonce);\n        SecretKeySpec keySpec = new SecretKeySpec(key, \"AES\");\n\n        try {\n            Cipher cipher = Cipher.getInstance(\"AES/CCM/NoPadding\");\n            cipher.init(mode, keySpec, paramSpec);\n            if (aad != null) {\n                cipher.updateAAD(aad);\n            }\n            return cipher.doFinal(data);\n        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {\n            e.printStackTrace();\n        }\n\n        return null;\n    }\n}",
+        "exampleID": 1019,
+        "label": "negative",
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/Crypto1.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public abstract class AbstractAeadCipher implements AeadCipher {\n  /**\n   * \u89e3\u5bc6\u5e76\u8f6c\u6362\u4e3a\u5b57\u7b26\u4e32\n   *\n   * @param associatedData AAD\uff0c\u989d\u5916\u7684\u8ba4\u8bc1\u52a0\u5bc6\u6570\u636e\uff0c\u53ef\u4ee5\u4e3a\u7a7a\n   * @param nonce IV\uff0c\u968f\u673a\u5b57\u7b26\u4e32\u521d\u59cb\u5316\u5411\u91cf\n   * @param ciphertext \u5bc6\u6587\n   * @return UTF-8\u7f16\u7801\u7684\u660e\u6587\n   */\n  public String decrypt(byte[] associatedData, byte[] nonce, byte[] ciphertext) {\n    try {\n      Cipher cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n      cipher.init(\n          Cipher.DECRYPT_MODE,\n          new SecretKeySpec(key, algorithm),\n          new GCMParameterSpec(tagLengthBit, nonce));\n      if (associatedData != null) {\n        cipher.updateAAD(associatedData);\n      }\n      return new String(cipher.doFinal(ciphertext), StandardCharsets.UTF_8);\n    } catch (InvalidKeyException e) {\n        throw new IllegalArgumentException(e);\n    } catch(InvalidAlgorithmParameterException e) {\n        throw new IllegalArgumentException(e);\n    } catch(NoSuchAlgorithmException e) {\n        throw new IllegalArgumentException(e);\n    } catch(NoSuchPaddingException e) {\n        throw new IllegalArgumentException(e);\n    } catch (BadPaddingException e) {\n        throw new DecryptionException(\"Decryption failed\", e);\n    } catch (IllegalBlockSizeException e) {\n        throw new DecryptionException(\"Decryption failed\", e);\n    }\n  }\n}",
+        "exampleID": 1020,
+        "label": "positive",
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/AbstractAeadCipher.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public key from step 2\n * are sent to the server.\n */\npublic class RFBSecurityARD {\n    \n    // The type and name identifies this authentication scheme to\n    // the rest of the RFB code.\n\n    private static final String NAME = \"Mac Authentication\";\n\n    public byte getType() {\n        return RfbProto.SecTypeArd;\n    }\n    public String getTypeName() {\n        return NAME;\n    }\n\n    // credentials\n    private String username;\n    private String password;\n\n\n    private byte[] performAES128(byte[] key, byte[] plaintext) throws IOException {\n        byte[] ciphertext;\n\n        try {\n            SecretKeySpec secretKeySpec = new SecretKeySpec(key, \"AES\");\n            Cipher cipher = Cipher.getInstance(\"AES/ECB/NoPadding\");\n            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);\n            ciphertext = cipher.doFinal(plaintext);\n        } catch (GeneralSecurityException e) {\n            e.printStackTrace();\n            throw new IOException(MSG_ERROR + \" (AES128)\");\n        }\n\n        return ciphertext;\n    }\n\n}",
+        "exampleID": 1021,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/RFBSecurityARD.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class Secure {\n\n    /**\n     * \u8bc1\u4e66\u548c\u56de\u8c03\u62a5\u6587\u89e3\u5bc6\n     *\n     * @param associatedData associated_data\n     * @param nonce          nonce\n     * @param cipherText     ciphertext\n     * @return {String} \u5e73\u53f0\u8bc1\u4e66\u660e\u6587\n     * @throws GeneralSecurityException \u5f02\u5e38\n     */\n    public String decryptToString(byte[] associatedData, byte[] nonce, String cipherText) throws GeneralSecurityException {\n        try {\n            Cipher cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n\n            SecretKeySpec key = new SecretKeySpec(aesKey, \"AES\");\n            GCMParameterSpec spec = new GCMParameterSpec(128, nonce);\n\n            cipher.init(Cipher.DECRYPT_MODE, key, spec);\n            cipher.updateAAD(associatedData);\n\n            return new String(cipher.doFinal(Base64.decode(cipherText)), StandardCharsets.UTF_8);\n        } catch (NoSuchAlgorithmException  e) {\n            throw new IllegalStateException(e);\n        } catch(NoSuchPaddingException e) {\n            throw new IllegalStateException(e);\n        } catch (InvalidKeyException  e) {\n            throw new IllegalArgumentException(e);\n        } catch (InvalidAlgorithmParameterException e) {\n            throw new IllegalArgumentException(e);\n        }\n    }\n\n}",
+        "exampleID": 1022,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/Secure.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public final class EncryptionUtils {\n    \n    public static String calculateChecksum(byte[] contentKey, UUID contentKeyIdUuid) {\n        try {\n            Cipher cipher = Cipher.getInstance(\"AES/ECB/PKCS5Padding\");\n            SecretKeySpec secretKeySpec = new SecretKeySpec(contentKey, \"AES\");\n            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);\n            byte[] encryptionResult = cipher.doFinal(contentKeyIdUuid.toString().getBytes(StandardCharsets.UTF_8));\n            byte[] checksumByteArray = new byte[8];\n            System.arraycopy(encryptionResult, 0, checksumByteArray, 0, 8);\n            return Base64.encode(checksumByteArray);\n        } catch (Exception e) {\n            throw new RuntimeException(e);\n        }\n    }\n\n}",
+        "exampleID": 1023,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/EncryptionUtils.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class SymmEncoder {\n\n  private static final Logger LOG = LoggerFactory.getLogger(SymmEncoder.class);\n\n  private static byte[] AesEcbDecode(byte[] encodedText, SecretKey key) {\n    try {\n      Cipher cipher = Cipher.getInstance(\"AES/ECB/NoPadding\");\n      cipher.init(Cipher.DECRYPT_MODE, key);\n      return cipher.doFinal(encodedText);\n    } catch (Exception ex) {\n      ex.printStackTrace();\n      return null;\n    }\n  }\n\n}",
+        "exampleID": 1024,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/SymmEncoder.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public String encrypt(String clearText) {\n    try {\n      Cipher cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n      byte[] iv = new byte[GCM_IV_LENGTH_IN_BYTES];\n      new SecureRandom().nextBytes(iv);\n      cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, loadSecretFile(), new GCMParameterSpec(GCM_TAG_LENGTH_IN_BITS, iv));\n      byte[] encryptedText = cipher.doFinal(clearText.getBytes(StandardCharsets.UTF_8));\n      return Base64.encodeBase64String(\n        ByteBuffer.allocate(GCM_IV_LENGTH_IN_BYTES + encryptedText.length)\n          .put(iv)\n          .put(encryptedText)\n          .array());\n    } catch (RuntimeException e) {\n      throw e;\n    } catch (Exception e) {\n      throw new IllegalStateException(e);\n    }\n  }\n\n}",
+        "exampleID": 1025,
+        "label": "negative",
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/AesGCMCipher.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class AESwrapper {\n\n    private final byte[] key;\n\n    public byte[] aes(final byte[] plaintext) {\n        try {\n            val aesCipher = Cipher.getInstance(\"AES/ECB/NoPadding\");\n            val secretKeySpec = new SecretKeySpec(key, \"AES\");\n            aesCipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);\n            return aesCipher.doFinal(plaintext, 0, plaintext.length);\n        } catch (Exception e) {\n            return null;\n        }\n    }\n\n}",
+        "exampleID": 1026,
+        "label": "negative",
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/AESwrapper.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class AESUtil implements InitializingBean {\n\n\n  \n    public String encrypt(String content){\n        Cipher encryptor;\n        try {\n            Key key = new SecretKeySpec(securityConfig.getAESKey().getBytes(StandardCharsets.UTF_8), \"AES\");\n            encryptor = Cipher.getInstance(\"AES/ECB/PKCS7Padding\");\n            encryptor.init(Cipher.ENCRYPT_MODE, key);\n        } catch (NoSuchAlgorithmException  e) {\n            e.printStackTrace();\n        } catch (NoSuchPaddingException e) {\n            e.printStackTrace();\n        }\n        try {\n            return new String(Base64Utils.encode(encryptor.doFinal(content.getBytes(StandardCharsets.UTF_8))));\n        } catch (IllegalBlockSizeException | BadPaddingException e) {\n            e.printStackTrace();\n        }\n        return null;\n    }\n\n}",
+        "exampleID": 1027,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/308.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class ProfileCipherOutputStream extends DigestingOutputStream {\n\n  private final Cipher cipher;\n\n  public ProfileCipherOutputStream(OutputStream out, byte[] key) throws IOException {\n    super(out);\n    try {\n      this.cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n\n      byte[] nonce  = generateNonce();\n      this.cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, \"AES\"), new GCMParameterSpec(128, nonce));\n\n      super.write(nonce, 0, nonce.length);\n    } catch (NoSuchAlgorithmException e) {\n      throw new AssertionError(e);\n    } catch (NoSuchPaddingException e) {\n      throw new AssertionError(e);\n    } catch (InvalidAlgorithmParameterException e) {\n      throw new AssertionError(e);\n    } catch (InvalidKeyException e) {\n      throw new IOException(e);\n    }\n  }\n}",
+        "exampleID": 1028,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/ProfileCipherOutputStream.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class Account {\n\n    public static String getGcmDecodedPrivateKey(String encryptedPriKey, String passphrase,String address, byte[] salt, int n, SignatureScheme scheme) throws Exception {\n        if (encryptedPriKey == null) {\n            throw new SDKException(ErrorCode.EncryptedPriKeyError);\n        }\n        if (salt.length != 16) {\n            throw new SDKException(ErrorCode.ParamError);\n        }\n        byte[] encryptedkey = new byte[]{};\n        try{\n            encryptedkey = Base64.getDecoder().decode(encryptedPriKey);\n        }catch (Exception e){\n            throw new SDKException(ErrorCode.ParamErr(\"encryptedPriKey is wrong\"));\n        }\n\n\n        int N = n;\n        int r = 8;\n        int p = 8;\n        int dkLen = 64;\n\n        byte[] derivedkey = SCrypt.generate(passphrase.getBytes(StandardCharsets.UTF_8), salt, N, r, p, dkLen);\n        byte[] derivedhalf2 = new byte[32];\n        byte[] iv = new byte[12];\n        System.arraycopy(derivedkey, 0, iv, 0, 12);\n        System.arraycopy(derivedkey, 32, derivedhalf2, 0, 32);\n\n        byte[] rawkey = new byte[0];\n        try {\n            SecretKeySpec skeySpec = new SecretKeySpec(derivedhalf2, \"AES\");\n            Cipher cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n            cipher.init(Cipher.DECRYPT_MODE, skeySpec, new GCMParameterSpec(128,iv));\n            cipher.updateAAD(address.getBytes());\n            rawkey = cipher.doFinal(encryptedkey);\n        } catch (Exception e) {\n            e.printStackTrace();\n            throw new SDKException(ErrorCode.encryptedPriKeyAddressPasswordErr);\n        }\n        Account account = new Account(rawkey, scheme);\n        if (!address.equals(account.getAddressU160().toBase58())) {\n            throw new SDKException(ErrorCode.encryptedPriKeyAddressPasswordErr);\n        }\n        return Helper.toHexString(rawkey);\n    }\n}",
+        "exampleID": 1029,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/918.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class Crypto {\n\npublic static String encryptAES(String value, String privateKey) {\n\t\ttry {\n\t\t\tbyte[] raw = privateKey.getBytes();\n\t\t\tSecretKeySpec skeySpec = new SecretKeySpec(raw, \"AES\");\n\t\t\tCipher cipher = Cipher.getInstance(\"AES\");\n\t\t\tcipher.init(Cipher.ENCRYPT_MODE, skeySpec);\n\t\t\treturn Codec.byteToHexString(cipher.doFinal(value.getBytes()));\n\t\t} catch (Exception ex) {\n\t\t\tthrow new UnexpectedException(ex);\n\t\t}\n\t}\n\n\n\npublic static String decryptAES(String value, String privateKey) {\n\t\ttry {\n\t\t\tbyte[] raw = privateKey.getBytes();\n\t\t\tSecretKeySpec skeySpec = new SecretKeySpec(raw, \"AES\");\n\t\t\tCipher cipher = Cipher.getInstance(\"AES\");\n\t\t\tcipher.init(Cipher.DECRYPT_MODE, skeySpec);\n\t\t\treturn new String(cipher.doFinal(Codec.hexStringToByte(value)));\n\t\t} catch (Exception ex) {\n\t\t\tthrow new UnexpectedException(ex);\n\t\t}\n\t}\n\n}",
+        "exampleID": 1030,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/Crypto.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class SendCalibrations {\n\n    public static byte[] encrypt(byte[] ivBytes, byte[] keyBytes, byte[] textBytes) {\n        try {\n            AlgorithmParameterSpec ivSpec = new IvParameterSpec(ivBytes);\n            SecretKeySpec newKey = new SecretKeySpec(keyBytes, \"AES\");\n            Cipher cipher = Cipher.getInstance(\"AES/CBC/PKCS5Padding\");\n            cipher.init(Cipher.ENCRYPT_MODE, newKey, ivSpec);\n            return cipher.doFinal(textBytes);\n        } catch (Exception e) {\n            System.err.println(\"Error during encryption: \" + e.toString());\n            return errorbyte;\n        }\n    }\n\n}",
+        "exampleID": 1031,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/SendCalibrations.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public final class StringHelper {\n    private static final Logger log = Logger.getLogger();\n\n\n    public static String decrypt(String message) throws InvalidParametersException {\n        try {\n            SecretKeySpec sks = new SecretKeySpec(hexStringToByteArray(Config.ENCRYPTION_KEY), \"AES\");\n            Cipher cipher = Cipher.getInstance(\"AES/ECB/PKCS5Padding\");\n            cipher.init(Cipher.DECRYPT_MODE, sks);\n            byte[] decrypted = cipher.doFinal(hexStringToByteArray(message));\n            return new String(decrypted, Const.ENCODING);\n        } catch (NumberFormatException | IllegalBlockSizeException | BadPaddingException e) {\n            log.warning(\"Attempted to decrypt invalid ciphertext: \" + message);\n            throw new InvalidParametersException(e);\n        } catch (Exception e) {\n            assert false;\n            return null;\n        }\n    }\n\n}",
+        "exampleID": 1032,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/StringHelper.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class Aes {\n\t\n\tpublic static String DecryptWithPassword(String password, byte[] iv, byte[] message, byte[] salt) {\n\n\t\tinitIV();\n\n\t\tString new_message = null;\n\t\t\n\t\ttry {\n\t\t\tSecretKeyFactory factory = SecretKeyFactory.getInstance(\"PBKDF2WithHmacSHA1\");\n\t\t\tKeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 256);\n\t\t\tSecretKey tmp = factory.generateSecret(spec);\n\t\t\tSecretKey secret_key = new SecretKeySpec(tmp.getEncoded(), \"AES\");\n\t\t\t\n\t\t\tCipher cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n\t\t\tIvParameterSpec ivSpec = new IvParameterSpec(iv);\n\t\t\tcipher.init(Cipher.DECRYPT_MODE, secret_key, ivSpec);\n\t\t\t\n\t\t\tnew_message = new String(cipher.doFinal(message));\n\t\t\t\n\t\t} catch (IllegalBlockSizeException e) {\n\t\t\tLog.e(Logger.UI, e.toString());\n\t\t\te.printStackTrace();\n\t\t} catch (BadPaddingException e) {\n\t\t\tLog.e(Logger.UI, e.toString());\n\t\t\te.printStackTrace();\n\t\t} catch (NoSuchAlgorithmException e) {\n\t\t\tLog.e(Logger.UI, e.toString());\n\t\t\te.printStackTrace();\n\t\t} catch (InvalidKeySpecException e) {\n\t\t\tLog.e(Logger.UI, e.toString());\n\t\t\te.printStackTrace();\n\t\t} catch (NoSuchPaddingException e) {\n\t\t\tLog.e(Logger.UI, e.toString());\n\t\t\te.printStackTrace();\n\t\t} catch (InvalidKeyException e) {\n\t\t\tLog.e(Logger.UI, e.toString());\n\t\t\te.printStackTrace();\n\t\t} catch (InvalidAlgorithmParameterException e) {\n\t\t\tLog.e(Logger.UI, e.toString());\n\t\t\te.printStackTrace();\n\t\t}\n\t\t\n\t\treturn new_message;\n\t}\n\t\n}",
+        "exampleID": 1033,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/Aes.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class AesUtil {\n\t/**\n\t * \u8bc1\u4e66\u548c\u56de\u8c03\u62a5\u6587\u89e3\u5bc6\n\t *\n\t * @param associatedData associated_data\n\t * @param nonce          nonce\n\t * @param cipherText     ciphertext\n\t * @return {String} \u5e73\u53f0\u8bc1\u4e66\u660e\u6587\n\t * @throws GeneralSecurityException \u5f02\u5e38\n\t */\n\tpublic String decryptToString(byte[] associatedData, byte[] nonce, String cipherText) throws GeneralSecurityException {\n\t\ttry {\n\t\t\tCipher cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n\n\t\t\tSecretKeySpec key = new SecretKeySpec(aesKey, \"AES\");\n\t\t\tGCMParameterSpec spec = new GCMParameterSpec(TAG_LENGTH_BIT, nonce);\n\n\t\t\tcipher.init(Cipher.DECRYPT_MODE, key, spec);\n\t\t\tcipher.updateAAD(associatedData);\n\n\t\t\treturn new String(cipher.doFinal(Base64.decode(cipherText)), StandardCharsets.UTF_8);\n\t\t} catch (NoSuchAlgorithmException e) {\n\t\t\tthrow new IllegalStateException(e);\n\t\t} catch (NoSuchPaddingException e) {\n\t\t\tthrow new IllegalStateException(e);\n\t\t} catch (InvalidKeyException e) {\n\t\t\tthrow new IllegalArgumentException(e);\n\t\t} catch (InvalidAlgorithmParameterException e) {\n\t\t\tthrow new IllegalArgumentException(e);\n\t\t}\n\t}\n\n}",
+        "exampleID": 1034,
+        "label": "positive",
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/AesUtil.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public static String decrypt(String strToDecrypt, String secret) \n        {\n            try\n            {\n                setKey(secret);\n                Cipher cipher = Cipher.getInstance(\"AES/ECB/PKCS5Padding\");\n                cipher.init(Cipher.DECRYPT_MODE, secretKey);\n                return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));\n            } \n            catch (Exception e) \n            {\n                System.out.println(\"Error while decrypting: \" + e.toString());\n            }\n            return null;\n        }\n}",
+        "exampleID": 1035,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/Vault.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class WeiXinPayService {\n\n   \n    protected static String decryptToString(WeixinPayElement element, String associated_data, String nonce, String ciphertext) throws Exception {\n        SecretKeySpec key = new SecretKeySpec(element.apiv3key.getBytes(StandardCharsets.UTF_8), \"AES\");\n        GCMParameterSpec spec = new GCMParameterSpec(128, nonce.getBytes(StandardCharsets.UTF_8));\n        Cipher cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n        cipher.init(Cipher.DECRYPT_MODE, key, spec);\n        cipher.updateAAD(associated_data.getBytes(StandardCharsets.UTF_8));\n        return new String(cipher.doFinal(Base64.getDecoder().decode(ciphertext)), StandardCharsets.UTF_8);\n    }\n\n}",
+        "exampleID": 1036,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/WeiXinPayService.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class Main {\n\n    // Test Bytes - 16 bytes\n    static byte[] testInput = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,\n            0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f};\n\n    // Test key - 16 bytes, 128-bit\n    static byte[] keyBytes = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,\n            0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f};\n\n    // Test nonce - 13 bytes, 104-bit\n    static byte[] nonce = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,\n            0x0a, 0x0b, 0x0c};\n\n\n    public static void main(String[] args) throws Exception {\n        Security.addProvider(new BouncyCastleProvider());\n        GCMParameterSpec parameterSpec = new GCMParameterSpec(32, nonce);\n        Cipher cipher = Cipher.getInstance(\"AES/CCM/NoPadding\");\n        SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, \"AES\");\n        cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, parameterSpec);\n        cipher.updateAAD(new byte[]{0x01});\n        System.out.println(DatatypeConverter.printHexBinary(cipher.doFinal(testInput)));\n    }\n}",
+        "exampleID": 1037,
+        "label": "negative",
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/Snippet46435599_28548.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class Aes\n{\n\n    public static Object[] aeadEncrypt(SecretKey key, byte[] data, byte[] associatedData)\n        throws GeneralSecurityException\n    {\n        Cipher cipher = Cipher.getInstance(\"AES/CCM/NoPadding\", \"BCFIPS\");\n\n        cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(128, Hex.decode(\"000102030405060708090a0b\")));\n\n        cipher.updateAAD(associatedData);\n\n        return new Object[] { cipher.getParameters(), cipher.doFinal(data) };\n    }\n}",
+        "exampleID": 1038,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/Aes1.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class DESUtil {\n\n    public static byte[] encrypt(byte[] data, byte[] key) throws Exception {\n        Cipher cipher = Cipher.getInstance(\"DES\");\n        DESKeySpec ds = new DESKeySpec(key);\n        SecureRandom sr = new SecureRandom();\n        SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(\"DES\");\n        SecretKey skey = secretKeyFactory.generateSecret(ds);\n        cipher.init(Cipher.ENCRYPT_MODE, skey, sr);\n        return cipher.doFinal(data);\n    }\n\n}",
+        "exampleID": 1039,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/DesUtil.java"
+    },
+    {
+        "url": "dummy",
+        "rawCode": "public class IGUtils {\n        public static String encryptPassword(String password, String enc_id, String enc_pub_key) {\n                byte[] rand_key = new byte[32], iv = new byte[12];\n                SecureRandom sran = new SecureRandom();\n                sran.nextBytes(rand_key);\n                sran.nextBytes(iv);\n                String time = String.valueOf(System.currentTimeMillis() / 1000);\n\n                // Encrypt random key\n                String decoded_pub_key =\n                        new String(Base64.getDecoder().decode(enc_pub_key), StandardCharsets.UTF_8)\n                                .replaceAll(\"-(.*)-|\\n\", \"\");\n                Cipher rsa_cipher = Cipher.getInstance(\"RSA/ECB/PKCS1PADDING\");\n                rsa_cipher.init(Cipher.ENCRYPT_MODE, KeyFactory.getInstance(\"RSA\")\n                        .generatePublic(\n                                new X509EncodedKeySpec(Base64.getDecoder().decode(decoded_pub_key))));\n                byte[] rand_key_encrypted = rsa_cipher.doFinal(rand_key);\n\n                // Encrypt password\n                Cipher aes_gcm_cipher = Cipher.getInstance(\"AES/GCM/NoPadding\");\n                aes_gcm_cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(rand_key, \"AES\"),\n                        new GCMParameterSpec(128, iv));\n                aes_gcm_cipher.updateAAD(time.getBytes());\n                byte[] password_encrypted = aes_gcm_cipher.doFinal(password.getBytes());\n\n                // Write to final byte array\n                ByteArrayOutputStream out = new ByteArrayOutputStream();\n                out.write(Integer.valueOf(1).byteValue());\n                out.write(Integer.valueOf(enc_id).byteValue());\n                out.write(iv);\n                out.write(ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN)\n                        .putChar((char) rand_key_encrypted.length).array());\n                out.write(rand_key_encrypted);\n                out.write(Arrays.copyOfRange(password_encrypted, password_encrypted.length - 16,\n                        password_encrypted.length));\n                out.write(Arrays.copyOfRange(password_encrypted, 0, password_encrypted.length - 16));\n\n                return String.format(\"#PWD_INSTAGRAM:%s:%s:%s\", \"4\", time,\n                        Base64.getEncoder().encodeToString(out.toByteArray()));\n        }\n\n}",
+        "exampleID": 1040,
+        "dataset": "init",
+        "filepath": "/Users/hongjinkang/repos/public_surf//GithubExamples/Cipher/IGUtils.java"
+    }
+]

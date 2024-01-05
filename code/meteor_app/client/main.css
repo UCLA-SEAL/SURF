@@ -1,0 +1,922 @@
+body {
+  font-family: sans-serif;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  /*padding-top: 150px;*/
+}
+
+.button-set {
+  margin-top: 20px;
+}
+.progress-bar {
+  float: right !important;
+}
+
+code {
+  /* background-color: #1e1e1e; */
+  color: #d4d4d4;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 1.1em;
+  padding: 2px 5px;
+}
+
+.numbers {
+  text-align: right;
+}
+.count-0 {
+  visibility: hidden !important;
+}
+.hideRow-0 {
+  display: none !important;
+}
+.hide-label {
+  display: none !important;
+}
+.hide-0 {
+  display: none;
+}
+.hide {
+  display: none;
+}
+.toggledForCount {
+  display: none;
+}
+
+.hideClass {
+  display: none;
+}
+.singleOption {
+  visibility: hidden;
+}
+
+.initialization {
+  /*background-color: rgba(31,120,180,0.6);*/
+  background-color: rgba(227,26,28,0.5);
+}
+
+.examplePanelType {
+  color: rgba(0,100,225);;
+}
+
+.keyword-search {
+  margin:8px;
+}
+
+.subgraph-0-node {
+  /*background-color: rgba(31,120,180,0.6);*/
+  background-color: rgb(233, 63, 1);
+}
+
+.frequent-subgraph-0 {
+  /*background-color: rgba(31,120,180,0.6);*/
+  background-color: rgba(118, 182, 202, 0.7);
+}
+
+
+.subgraph-0-node-misuse {
+  /*background-color: rgba(31,120,180,0.6);*/
+  /* background-color: rgb(233, 63, 1); */
+  background-color: #dc3545;
+}
+
+
+.subgraph-0-node-correct {
+  /*background-color: rgba(31,120,180,0.6);*/
+  /* background-color: rgb(34, 230, 50); */
+  background-color: #28a745
+}
+ 
+
+
+.try {
+  background-color: rgba(255,127,0,0.7);
+}
+.subgraph-1-node-misuse {
+  background-color: rgb(255,127,0);
+}
+
+.subgraph-1-node {
+  /*background-color: rgba(31,120,180,0.6);*/
+  background-color: rgb(233, 63, 1);
+}
+
+
+
+.subgraph-1-node-correct {
+  background-color: rgb(22, 158, 1);
+}
+
+
+.configuration {
+  background-color: rgba(251,154,153,0.7);
+}
+
+.subgraph-2-node {
+  background-color: rgb(251,154,153);
+}
+
+
+.subgraph-2-node-misuse {
+  background-color: rgb(251,154,153);
+}
+
+
+
+.subgraph-2-node-correct {
+  background-color: rgb(1, 103, 4);
+}
+
+
+
+.guardType {
+  background-color: rgba(253,191,111, 0.7);
+}
+
+.subgraph-3-node-misuse {
+  background-color: rgb(253,191,111);
+}
+
+.subgraph-3-node {
+  background-color: rgb(1, 136, 71);
+}
+
+.subgraph-3-node-correct {
+  background-color: rgb(1, 136, 71);
+}
+
+
+
+
+.guardCondition {
+  background-color: rgba(253,191,111, 0.7);
+}
+
+
+.subgraph-4-node {
+  background-color: rgb(253,191,111);
+}
+.subgraph-4-node-misuse {
+  background-color: rgb(253,191,111);
+}
+
+
+
+.subgraph-4-node-correct {
+  background-color: rgb(1, 167, 172);
+}
+
+
+
+
+.focalAPI {
+  background-color: rgba(31,120,180,0.65);
+  /*background-color: rgba(227,26,28,0.6);*/
+}
+.checkType, .followUpCheck {
+  background-color: rgba(241, 196, 15,0.7);
+}
+
+
+
+
+
+
+
+/*.followUpCheck {
+  background-color: rgba(51,160,44,0.7);
+}*/
+.use {
+  background-color: rgba(178,223,138,0.7);
+}
+
+.subgraph-5-node {
+  background-color: rgb(179, 5, 5);
+}
+
+.subgraph-5-node-misuse {
+  background-color: rgb(179, 5, 5);
+}
+
+.subgraph-5-node-correct {
+  background-color: rgb(178,223,138);
+}
+
+
+
+
+.subgraph-6-node {
+  background-color: rgb(220, 0, 0);
+}
+
+.subgraph-6-node-misuse {
+  background-color: rgb(220, 0, 0);
+}
+
+.subgraph-6-node-correct {
+  background-color: rgb(178,223,138);
+}
+
+
+
+
+.exceptionType {
+  background-color: rgba(166,206,227,0.7);
+}
+
+.subgraph-7-node {
+  background-color: rgb(166,206,227);
+}
+
+.subgraph-7-node-correct {
+  background-color: rgb(120,200,120);
+}
+
+
+.subgraph-7-node-misuse {
+  
+  background-color: rgb(220, 20, 20);
+}
+
+
+
+
+.exceptionHandlingCall {
+  /*background-color: rgba(52, 152, 219,0.7);*/
+  background-color: rgba(76,146,76,0.7);
+}
+
+.subgraph-8-node {
+  background-color: rgb(76,146,76);
+}
+
+.subgraph-8-node-correct {
+  background-color: rgb(120,230,120);
+}
+
+
+.subgraph-8-node-misuse {
+  
+  background-color: rgb(240, 20, 20);
+}
+
+
+
+.finally {
+  background-color: rgba(106,61,154,0.7);
+}
+.subgraph-9-node {
+  background-color: rgb(106,61,154);
+}
+.subgraph-9-node-correct {
+  background-color: rgb(100,240,100);
+}
+
+
+.subgraph-9-node-misuse {
+  
+  background-color: rgb(240, 50, 50);
+}
+
+
+
+
+.cleanUpCall {
+  background-color: rgba(202,178,214,0.7);
+}
+
+.subgraph-10-node {
+  background-color: rgb(202,178,214);
+}
+.subgraph-10-node-correct {
+  background-color: rgb(12,240,120);
+}
+
+
+.subgraph-10-node-misuse {
+  
+  background-color: rgb(240, 80, 80);
+}
+
+
+
+
+
+.subgraph-11-node {
+  background-color: rgb(135, 34, 185);
+}
+
+
+.subgraph-11-node-correct {
+  background-color: rgb(62,240,120);
+}
+
+
+.subgraph-11-node-misuse {
+  
+  background-color: rgb(220, 80, 120);
+}
+
+
+
+.subgraph-12-node {
+  background-color: rgb(12, 6, 129);
+}
+
+
+.subgraph-13-node {
+  background-color: rgb(200, 34, 185);
+}
+
+
+.subgraph-14-node {
+  background-color: rgb(135, 200, 185);
+}
+
+.subgraph-15-node {
+  background-color: rgb(135, 200, 200);
+}
+
+
+.keyword-highlight {
+  background-color: rgb(135, 200, 200);
+}
+
+.border-guard {
+  border-left: 6px solid rgba(253,191,111, 0.7)
+}
+
+.border-guard:hover {
+  border-left: 9px solid rgba(253,191,111, 0.7)
+}
+
+.border-declaration {
+  border-left: 6px solid rgba(233, 132, 134, 0.5)
+}
+
+.border-declaration:hover {
+  border-left: 9px solid rgba(233, 132, 134, 0.5)
+}
+
+
+.border-method {
+  border-left: 6px solid rgba(241, 196, 15,0.7)
+}
+
+.border-method:hover {
+  border-left: 9px solid rgba(241, 196, 15,0.7)
+}
+
+.border-parameter1 {
+  border-left: 6px solid rgba(241, 196, 15,0.7)
+}
+
+.border-parameter1:hover {
+  border-left: 9px solid rgba(241, 196, 15,0.7)
+}
+
+.border-exception {
+  border-left: 6px solid rgba(76,146,76,0.7)
+}
+
+.border-exception:hover {
+  border-left: 9px solid rgba(76,146,76,0.7)
+}
+
+
+.border-return {
+  border-left: 6px solid rgba(241, 196, 15,0.7)
+}
+
+.border-return:hover {
+  border-left: 9px solid rgba(241, 196, 15,0.7)
+}
+
+.border-error {
+  border-left: 6px solid rgba(241, 211, 230, 0.7)
+}
+
+.border-error:hover {
+  border-left: 9px solid rgba(241, 211, 230, 0.7)
+}
+
+
+
+.left-indent {
+  padding-left: 30px;
+}
+
+.no-padding{
+  padding: 0px;
+}
+.padding-left-30 {
+  padding-left: 30px;
+}
+.padding-left-60 {
+  padding-left: 60px;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  min-height: 100%;
+  background: white;
+}
+
+.toggled {
+  display: none;
+}
+ 
+header {
+  /*background: #d2edf4;*/
+  /*background-image: linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);*/
+  padding: 20px 15px 15px 15px;
+  position: relative;
+}
+ 
+#login-buttons {
+  display: block;
+}
+ 
+h1 {
+  font-size: 1.5em;
+  margin: 0;
+  margin-bottom: 10px;
+  display: inline-block;
+  margin-right: 1em;
+}
+ 
+form {
+  margin-top: 10px;
+  margin-bottom: -10px;
+  position: relative;
+}
+ 
+.new-task input {
+  box-sizing: border-box;
+  padding: 10px 0;
+  background: transparent;
+  border: none;
+  width: 100%;
+  padding-right: 80px;
+  font-size: 1em;
+}
+ 
+.new-task input:focus{
+  outline: 0;
+}
+ 
+ul {
+  margin: 0;
+  padding: 0;
+  background: white;
+}
+ 
+.hang-right {
+  float: right;
+}
+
+.delete {
+  float: right;
+  font-weight: bold;
+  background: none;
+  font-size: 1em;
+  border: none;
+  position: relative;
+}
+ 
+li {
+  position: relative;
+  list-style: none;
+  padding-left: 15px;
+  /*padding: 15px;*/
+  border-bottom: #eee solid 1px;
+}
+ 
+/*li .text {
+  margin-left: 10px;
+}*/
+
+.mycode {
+  font-family: monospace;
+  padding: 0px;
+  margin: 0px;
+}
+
+.big-parens {
+  font-size: 100px;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+li.checked {
+  /*color: #888;*/
+  color: black;
+}
+li {
+  color: #888;
+}
+ 
+li.checked .text {
+  text-decoration: line-through;
+}
+ 
+li.private {
+  background: #eee;
+  border-color: #ddd;
+}
+ 
+header .hide-completed {
+  float: right;
+}
+ 
+.toggle-private {
+  margin-left: 5px;
+}
+
+@media (max-width: 600px) {
+  li {
+    padding: 12px 15px;
+  }
+ 
+  .search {
+    width: 150px;
+    clear: both;
+  }
+ 
+  .new-task input {
+    padding-bottom: 5px;
+  }
+}
+
+
+.percentage {
+  font-size: .8em;
+  line-height: 0.3;
+  text-transform: uppercase;
+  width: 100%;
+  height: 35px;
+}
+.percentage:after {
+  content: "";
+  display: block;
+  background-color: #3d9970;
+  margin-bottom: 10px;
+  height: 50%;
+  position: relative;
+  transition: background-color .3s ease;
+  cursor: pointer;
+}
+.percentage:hover:after, .percentage:focus:after {
+  background-color: #aaa;
+}
+
+.percentage .tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 8px;
+  position: relative;
+  z-index: 1;
+  left: 30px;
+  top: 30px;
+}
+
+
+.percentage:hover .tooltiptext {
+    visibility: visible;
+}
+
+.scroll {
+    background-color: #00FFFF;
+    width: 100px;
+    height: 100px;
+    overflow: scroll;
+}
+
+
+.expanded::after {
+  content: "^";
+  
+}
+.unexpanded::after {
+  content: "V";
+  color: #333;
+  top: -2px;
+  right: 0px;
+  position: absolute;
+  font-family: "FontAwesome"
+}
+
+.example pre {
+  margin-bottom: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.match-explanation {
+  /* margin-left:36px; */
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  padding: 3px;  
+  /* color: white; */
+}
+
+.match-explanation span {
+  color: white;
+}
+
+.example-highlighted-correct {
+  /* background-color: #ffff00; */
+  border: 2px solid #045015;
+  padding: 7.5px;
+}
+
+.example-highlighted-misuse {
+  /* background-color: #ffff00; */
+  border: 2px solid #a2053a;
+  padding: 7.5px;
+}
+
+.example-highlighted-confused {
+  /* background-color: #ffff00; */
+  border: 2px dashed #945e01;
+  padding: 7.5px;
+}
+
+.example-highlighted-confused-correct {
+  /* background-color: #ffff00; */
+  border: 4px dashed #045015;
+  padding: 7.5px;
+}
+
+.example-highlighted-confused-misuse {
+  /* background-color: #ffff00; */
+  border: 4px dashed #a2053a;
+  padding: 7.5px;
+}
+
+.boundedBox {
+  border: 2px dashed;
+  /* padding: 7.5px; */
+}
+
+.checkbox-container:hover .frequentSubgraphCheckbox {
+  display: block;
+}
+
+.frequentSubgraphCheckbox {
+  /* display: none; */
+  
+}
+
+.frequent-node {
+  /* border-bottom: black 1px solid; */
+  
+}
+
+.analysis-region  {
+  /* background-color: #7393B3; */
+}
+
+.bag {
+  border: 1px solid black;
+  padding: 24px;
+  margin-top: 8px;
+  margin-bottom:4px;
+
+  flex: 0 0 auto;
+  /* width: 16.66666667%; */
+
+  color: white;
+
+  background-color: #17a2b8;
+}
+
+.new-bag-container {
+  background-color: white;
+}
+
+.example pre {
+  background-color: white;
+}
+
+/* .bag-0 {
+  background-color: rgb(50, 50, 200);
+}
+
+.bag-1 {
+  background-color: rgb(200, 50, 50);
+}
+
+.bag-2 {
+  background-color: rgb(50, 200, 50);
+}
+.bag-3 {
+  background-color: rgb(50, 50, 200);
+}
+
+.bag-4 {
+  background-color: rgb(200, 50, 50);
+}
+
+.bag-5 {
+  background-color: rgb(50, 200, 50);
+}
+
+.bag-6 {
+  background-color: rgb(50, 50, 200);
+}
+
+.bag-7 {
+  background-color: rgb(200, 50, 50);
+}
+
+.bag-8 {
+  background-color: rgb(50, 200, 50);
+}
+
+.bag-9 {
+  background-color: rgb(50, 50, 200);
+}
+
+.bag-10 {
+  background-color: rgb(200, 50, 50);
+}
+
+.bag-11 {
+  background-color: rgb(50, 200, 50);
+} */
+
+
+.discriminative-cancel:after {
+    display: inline-block;
+    content: "\00d7"; /* This will render the 'X' */
+}
+
+.bag .bag-edit {
+  display: flex;
+}
+/* .btn.bag-edit {
+  display: none;
+} */
+
+.bag-edit:after {
+    display: inline-block;
+    content: "\270E"; /* This will render the 'X' */
+}
+
+.add-to-bag-warning-message {
+  color: red;
+}
+
+.center {
+  margin: auto;
+
+  align-items: center;
+  justify-content: center;
+  display: flex;
+
+}
+
+.bag-text {
+  overflow-wrap: break-word;
+}
+
+
+.slidecontainer {
+  width: 100%; /* Width of the outside container */
+}
+
+/* The slider itself */
+.slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 25px; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #04AA6D; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #04AA6D; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+
+.code-background {
+  background-color: #1E1E1E;; color: #D4D4D4; margin-bottom: 0; padding-top:0; padding-bottom:0; border:0
+}
+
+.row-alignment {
+  height:auto; padding:0; margin-bottom: 0;
+}
+
+.underline_on_hover:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+
+
+.progress {
+  height: 100%;
+  width: 0;
+  background-color: #4CAF50;
+  animation: progressAnimation 2s linear infinite;
+}
+
+/* @keyframes progressAnimation {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+} */
+
+.hidden {
+  display: none;
+}
+
+.has_border {
+  border: 1px solid black;
+}
+
+.yellow {
+  background-color: rgb(255, 193, 7);
+  color: black;
+}
+
+.red {
+  background-color: rgb(220, 53, 69);
+  color: white;
+}
+
+.green {
+  background-color: rgb(40, 167, 69);
+  color: white;
+}
+
+.hovertooltip {
+  position: relative;
+  display: inline-block;
+  /* border-bottom: 1px dotted black; */
+  text-decoration:underline;
+  text-decoration-style: dotted;
+}
+
+.hovertooltip .hovertooltiptext {
+  visibility: hidden;
+  width: 280px;
+  color: black;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  border:3px solid black;
+  bottom: -500%;
+  left: 150%;
+  margin-left: -60px;
+  background-color:white;
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.hovertooltip:hover .hovertooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
