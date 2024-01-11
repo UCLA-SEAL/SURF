@@ -33,6 +33,24 @@ The right side shows the candidate features.
 
 ## Running
 
+### Alternative1: From docker
+Run `docker run -p 3000:3000  -it codesurf/surf /bin/bash`
+
+### Alternative2: install meteorjs locally
+Install meteorjs and the dependencies of SURF:
+```
+npm install -g meteor 
+export PATH=/Users/MyUserName/.meteor:$PATH
+
+meteor npm install --save pycollections html2canvas bootstrap highlight.js @babel/runtime openai
+```
+
+Install Java, e.g., using brew
+```
+brew install java 
+```
+
+### Run a case study
 
 From the command line in the meteor_app directory, run either one of the following three commands:
 ```
