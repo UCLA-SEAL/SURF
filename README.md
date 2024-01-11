@@ -37,7 +37,7 @@ The right side shows the candidate features.
 Run `docker run -p 3000:3000  -it codesurf/surf /bin/bash`
 
 ### Alternative2: install meteorjs locally
-Install meteorjs and the dependencies of SURF:
+Install meteorjs and the dependencies of SURF (replace "MyUserName"):
 ```
 npm install -g meteor 
 export PATH=/Users/MyUserName/.meteor:$PATH
