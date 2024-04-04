@@ -1,0 +1,33 @@
+#const n=1.
+#const s=0.
+graph(0).
+graph(2).
+graph(3).
+graph(4).
+graph(5).
+graph(6).
+graph(8).
+graph(10).
+graph(11).
+graph(12).
+graph(14).
+graph(15).
+graph(16).
+graph(17).
+graph(18).
+graph(19).
+graph(20).
+graph(21).
+graph(22).
+graph(23).
+graph(24).
+graph(26).
+graph(27).
+graph(29).
+{ selected(G) : graph(G) } <= 1 :- graph(G).
+sufficiently_covered(SG) :- #count { G : selected(G), covers(G, SG), graph(G) } >= n, subgraph(SG).
+:- { selected(G)} > s .
+covered_count(X) :- X = #count {SG : sufficiently_covered(SG), subgraph(SG)}.
+#maximize {X : covered_count(X) }.
+#show selected/1.
+#show covered_count/1.
