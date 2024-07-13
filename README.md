@@ -1,7 +1,10 @@
 # SURF
 Scaling Code Pattern Inference with Interactive What-If Analysis (ICSE 2024) 
-(paper at [https://web.cs.ucla.edu/~miryung/Publications/icse2024-surf.pdf])
-(demo at [http://web.cs.ucla.edu/~miryung/Publications/icse2024surf_demo.mp4]
+
+paper at [https://web.cs.ucla.edu/~miryung/Publications/icse2024-surf.pdf]
+
+demo at [http://web.cs.ucla.edu/~miryung/Publications/icse2024surf_demo.mp4]
+
 ## Summary of SURF 
 
 SURF is an approach for active learning for code pattern inference.
