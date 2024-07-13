@@ -1,5 +1,6 @@
 # SURF
-Scaling Code Pattern Inference with Interactive What-If Analysis
+Scaling Code Pattern Inference with Interactive What-If Analysis (ICSE 2024) 
+(pdf[https://web.cs.ucla.edu/~miryung/Publications/icse2024-surf.pdf])
 
 ## Summary of SURF 
 
